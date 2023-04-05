@@ -5,8 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .main-header{
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .header__logo{
+            width: 200px;
+            height: 200px;
+        }
+        .header__btn{
+            background-color:aquamarine;
+            border: 1px solid grey;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <header class="header main-header">
+        <img src="./img/logo.png" class="logo header__logo" alt="">
+        <button class="btn header__btn">Вхід</button>
+    </header>
     <script src="./js/style.js"></script>
 </body>
 </html>
