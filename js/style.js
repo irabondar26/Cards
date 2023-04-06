@@ -17,88 +17,72 @@ class Request {
   }
 }
 
-// async function main() {
-//   let request = new Request();
-//   let cards = await request.getAll();
-//   console.log(cards);
-// }
-// main();
+class Modal {
+  constructor(id) {
+    this.id = id;
+  }
 
-class AuthorizationForm {
   render() {
-    this.formAuthorization = document.createElement("div");
-    this.formAuthorization.id = "autorizationForm";
-    this.formAuthorization.style.display = "none";
+    this.modalWrapper = document.createElement("div");
+    this.modalWrapper.id = this.id;
+    this.modalWrapper.classList.add("modal-wrapper");
+    this.modalWrapper.style.display = "none";
 
-    let login = document.createElement("input");
-    login.id = "login";
-
-    let password = document.createElement("input");
-    password.id = "password";
-
-    let buttonAuthorization = document.createElement("button");
-    buttonAuthorization.id = "authBtn";
-    buttonAuthorization.addEventListener("click", this.logining.bind(this));
-    buttonAuthorization.textContent = "Login";
+    let modalContent = document.createElement("div");
+    modalContent.id = "content" + this.id;
 
     let closeSpan = document.createElement("span");
-    closeSpan.textContent = "Close";
+    closeSpan.innerHTML = "&times;";
     closeSpan.addEventListener("click", this.hideForm.bind(this));
+    modalContent.append(closeSpan);
 
-    this.formAuthorization.append(
-      login,
-      password,
-      buttonAuthorization,
-      closeSpan
-    );
-    return this.formAuthorization;
+    window.addEventListener("click", (event) => {
+      if (!event.target.closest(".modal-wrapper")) {
+        this.hideForm();
+      }
+    });
+
+    this.modalWrapper.append(modalContent);
+    return this.modalWrapper;
   }
 
   showForm() {
-    this.formAuthorization.style.display = "block";
-  }
-  hideForm() {
-    this.formAuthorization.style.display = "none";
+    this.modalWrapper.style.display = "block";
   }
 
-  async logining() {
-    let login = "familyClinic@gmail.com"; //login;
-    let password = 123456; //password
-    let token = "";
-    try {
-      let response = await fetch(
-        "https://ajax.test-danit.com/api/v2/cards/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: login, password: password }),
-        }
-      );
-      token = await response.text();
-      console.log(token);
-    } catch (error) {
-      console.log(error.message);
-    }
-    if (token != NaN && token != undefined && token != "") {
-      this.hideForm();
-      alert("Welcome " + login);
-    }
+  hideForm() {
+    this.modalWrapper.style.display = "none";
   }
 }
 
-let cardsDiv = document.createElement("div");
-cardsDiv.id = "cards";
-cardsDiv.innerText = "No items have been added";
-document.body.append(cardsDiv);
+class AuthorizationForm extends Modal {
+  constructor(id) {
+    super(id);
+  }
 
-let autorizationForm = new AuthorizationForm();
-let formAuth = autorizationForm.render();
-document.body.append(formAuth);
+  render() {
+    let baseForm = super.render();
+    console.log(baseForm);
 
-let headerBtn = document.querySelector(".header__btn");
-headerBtn.addEventListener(
-  "click",
-  autorizationForm.showForm.bind(autorizationForm)
-);
+    let login = document.createElement("input");
+    login.id = "login";
+    login.type = "text";
+    login.name = "login";
+    login.placeholder = "Ваш логин";
+    login.required = "true";
+
+    let password = document.createElement("input");
+    password.id = "password";
+    password.name = "password";
+    password.placeholder = "Ваш пароль";
+    password.required = "true";
+
+    let buttonAuthorization = document.createElement("button");
+    buttonAuthorization.id = "authBtn";
+    // событие на кнопке авторизации
+    buttonAuthorization.textContent = "Login";
+
+    baseForm.append(login, password, buttonAuthorization);
+    return baseForm;
+  }
+}
