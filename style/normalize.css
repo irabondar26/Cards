@@ -1,0 +1,42 @@
+/** @format */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  transform-style: preserve-3d;
+}
+
+html {
+  height: 100%;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  text-align: center;
+}
+
+h2 {
+  margin: 0;
+}
