@@ -204,15 +204,20 @@ let response = await request.json();
 }
 
 
-const modal = new Modal("window", "save-1");
+const modal = new Modal("window", "save");
 const form = new Forms();
 document.body.append(modal.render("Авторизация", form.formLogin(), "Закрыть", "Сохранить")); // вставила окошко авторизации
 
 //некоторые глобальные переменные, которые нужны для проверки пароля и логина
-const btnSave = document.getElementById("save-1");
+const btnSave = document.getElementById("save");
 const mail = document.getElementById("email");
 const pass = document.getElementById("pass");
 const createVisitBtn = document.getElementById("create-visit-btn");
+
+// контейнер для будущих карточек
+const cardContainer = document.createElement("div"); 
+cardContainer.classList = "card-container" // 
+document.body.append(cardContainer);
 
 //при клике на єту кнопку проверяю пароль и вывожу на стену карточки. 
 btnSave.addEventListener("click", (e)=> {
@@ -244,27 +249,45 @@ btnSave.addEventListener("click", (e)=> {
 })
 
 const visit = new Visit("Цель визита", "Выберите врача", "Краткое описание", "Выберите срочность", "ФИО клиента" )
-
+let counter = 0;
 //при клике на эту кнопку выводится модальное окно для создания визита.
 createVisitBtn.addEventListener("click", (e)=> {
+    counter++;
     e.preventDefault();
-    const modal2 = new Modal("window-1", "save-2");
+    const modal2 = new Modal("window-1", `save-${counter}`);
     document.body.append(modal2.render("Создать визит", visit.render(), "Закрыть", "Сохранить"));
     modal2.openModal(); 
     
     
-    const btnSaveVisit = document.getElementById("save-2"); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
+    const btnSaveVisit = document.getElementById(`save-${counter}`); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
     btnSaveVisit.addEventListener("click", (e) => {
               e.preventDefault();
               modal2.closeModal(); // закрыла модалку.
               console.log("здесь делаем пост запрос и выводим карточку на стену");
+
+              const card = new Card();
+              card.renderCard();
     })
     
     
 })
 
 
-//далее идет создание карточки
-
+//далее идет создание карточки, данные для нее (data) возьмем из промиса. Пока ФИО и доктор - выдуманные. 
+class Card{
+    renderCard(){
+        //const {a, b, c , d} = data;
+        const card = document.createElement("div");
+        card.classList = "card card-width";
+        card.innerHTML = `
+        <h5 class="card-header">Иванов Иван Иванович</h5> 
+        <div class="card-body">
+         <h5 class="card-title">Доктор: стоматолог</h5>
+        <a href="#" class="btn btn-primary">Показать больше</a>
+        </div>`
+        cardContainer.prepend(card);
+        return card;
+    }
+}
 
 
