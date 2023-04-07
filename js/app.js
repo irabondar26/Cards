@@ -10,8 +10,9 @@ entry.addEventListener("click", (e) => {
 
 
 class Modal{
-    constructor(id){
+    constructor(id, idSaveBtn){
         this.id = id;
+        this.idSaveBtn = idSaveBtn
     }
 
     render(header = "", body, close = "", save = ""){  // метод который делает модалку общую для всех форм. при вызове метода render в парметр body добавляем нужную форму.
@@ -48,7 +49,7 @@ class Modal{
         btnSave.type = "button";
         btnSave.classList = "btn btn-primary";
         btnSave.textContent = save;
-        btnSave.id = "save-btn"
+        btnSave.id = this.idSaveBtn; // добавлю id к какждой кнопке "сохранить" в модалке, чтобы потом искать ее и вешать обработчик
         this.div1.append(div2);
         div2.append(div3);
         div3.append(div4, div5, div6);
@@ -203,12 +204,12 @@ let response = await request.json();
 }
 
 
-const modal = new Modal("window");
+const modal = new Modal("window", "save-1");
 const form = new Forms();
 document.body.append(modal.render("Авторизация", form.formLogin(), "Закрыть", "Сохранить")); // вставила окошко авторизации
 
 //некоторые глобальные переменные, которые нужны для проверки пароля и логина
-const btnSave = document.getElementById("save-btn");
+const btnSave = document.getElementById("save-1");
 const mail = document.getElementById("email");
 const pass = document.getElementById("pass");
 const createVisitBtn = document.getElementById("create-visit-btn");
@@ -247,11 +248,23 @@ const visit = new Visit("Цель визита", "Выберите врача", 
 //при клике на эту кнопку выводится модальное окно для создания визита.
 createVisitBtn.addEventListener("click", (e)=> {
     e.preventDefault();
-    const modal2 = new Modal("window-1");
+    const modal2 = new Modal("window-1", "save-2");
     document.body.append(modal2.render("Создать визит", visit.render(), "Закрыть", "Сохранить"));
     modal2.openModal(); 
+    
+    
+    const btnSaveVisit = document.getElementById("save-2"); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
+    btnSaveVisit.addEventListener("click", (e) => {
+              e.preventDefault();
+              modal2.closeModal(); // закрыла модалку.
+              console.log("здесь делаем пост запрос и выводим карточку на стену");
+    })
+    
+    
 })
 
+
+//далее идет создание карточки
 
 
 
