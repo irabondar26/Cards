@@ -1,7 +1,7 @@
 const URL = "https://ajax.test-danit.com/api/v2/cards";
 const TOKEN = "787ace58-d17b-420f-b75b-29ee789e9496";
 
-const entry = document.getElementById("entry");
+const entry = document.getElementById("entry"); // это кнопка вход на главной странице. при нажатии на нее открываем модалку.
 entry.addEventListener("click", (e) => {
     e.preventDefault();
     modal.openModal();
