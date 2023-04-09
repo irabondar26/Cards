@@ -1,82 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="./style/normalize.css">
+    <link rel="stylesheet" href="/style/style.css">
     <title>Step-Project-Card</title>
     <style>
-        body{
-            height: 100vh;
-        }
 
-        .active {
-            display: block;
-        }
-        #login-form{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .form-items{
-            display: flex;
-            justify-content: center;
-        }
-
-        #create-visit-btn{
-           display: none;
-        }
-        .no-visit-text{
-            display: none;
-        }
-
-        .card-width{
-            max-width: 400px;
-            margin: 10px;
-        }
-
-        .card-container{
-              display: flex;
-              margin: 0 auto;
-              max-width: 900px;
-              justify-content: center;
-              align-items: center;
-              flex-wrap: wrap;
-        }
-        .small-buttons-container{
-             display: flex;
-             justify-content: end;
-        }
-        .small-button{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 24px;
-            height: 24px;
-            margin-left: 10px;
-            border: 1px solid #0d6efd;
-            border-radius: 5px;
-
-        }
     </style>
 </head>
+
 <body>
-    <nav class="navbar bg-body-tertiary">
+
+    <header class="navbar bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand">OnClinic</a>
-          <form class="d-flex" role="search">
-            <button id="entry" class="btn btn-outline-primary" type="submit">Вход</button>
-            <button id="create-visit-btn" class="btn btn-outline-primary" type="submit">Создать визит</button>
-          </form>
+            <a href="./index.html" class="navbar-brand"><img width="130" height="130" class="header__logo"
+                    src="./img/logo.png" alt=""></a>
+            <form class="d-flex" role="search">
+                <button id="entry" class="btn btn-lg btn-outline-primary" type="submit">Вход</button>
+                <button id="create-visit-btn" class="btn btn-lg btn-outline-primary" type="submit">Создать
+                    визит</button>
+            </form>
         </div>
-      </nav> 
-    <p class="no-visit-text">
-    Вы пока не создали ни одного визита</p>
-   
-            
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-   <script src="./js/app.js"></script> 
+    </header>
+    <main>
+
+        <div class="container-fluid filter">
+
+            <div class="col-sm-3">
+                <input type="text" id="search" class="form-control" placeholder="Поиск...">
+            </div>
+            <div class="col-sm-3">
+                <select class="form-select" id="specificSizeSelect">
+                    <option selected="">Выберите срочность</option>
+                    <option value="1">Высокая</option>
+                    <option value="2">Обычная</option>
+                    <option value="3">Низкая</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <select class="form-select" id="specificSizeSelect">
+                    <option selected="">Выберите врача</option>
+                    <option value="1">Терапевт</option>
+                    <option value="2">Кардиолог</option>
+                    <option value="3">Стоматолог</option>
+                </select>
+            </div>
+        </div>
+        <div class="cards-wrapper">
+            <p class="align-middle main__text start__text">No items have been added</p>
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+        <script src="./js/app.js"></script>
 </body>
+
 </html>
