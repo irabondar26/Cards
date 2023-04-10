@@ -62,7 +62,7 @@ class Modal {
     btn.addEventListener("click", this.closeModal.bind(this));
 
     this.div1.addEventListener("click", (e) => {
-      console.log(e.target);
+      // console.log(e.target);
       if (e.target === this.div1) {
         this.closeModal();
       }
@@ -71,6 +71,11 @@ class Modal {
     return this.div1;
   }
 
+  changeModal(body){
+    body.classList.add("modal-body");
+    let firstdiv=this.div1.firstChild;
+    firstdiv.firstChild.lastChild.previousElementSibling.insertAdjacentElement("afterend",body);
+}
   openModal() {
     this.div1.style.display = "block";
   }
@@ -120,96 +125,135 @@ class Authorization {
 }
 
 //данный класс описывает общую форму для визитов
-class Visit {
-  constructor(goal, doctor, description, urgency, fullName) {
-    this.goal = goal;
-    this.doctor = doctor;
-    this.description = description;
-    this.urgency = urgency;
-    this.fullName = fullName;
+class Visit{
+  constructor(goal, doctor, description, urgency, fullName){
+      this.goal = goal;
+      this.doctor = doctor;
+      this.description = description;
+      this.urgency = urgency;
+      this.fullName = fullName;
   }
-  render() {
-    let doctor = document.createElement("div");
-    doctor.classList = "input-group mb-3";
-    doctor.innerHTML = `
-        <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
-            <select class="form-select" id="inputGroupSelect01">
-                <option value="1">Стоматолог</option>
-                <option value="2">Кардиолог</option>
-                <option value="3">Терапевт</option>
-            </select>
-        `;
+  render(){
+  
+      let doctor = document.createElement("div");
+      doctor.classList = "input-group mb-3";
+      doctor.innerHTML = `
+      <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
+          <select class="form-select" id="inputGroupSelect01">
+              <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
+              <option class="form-select__otion form-select__otion--cardiolog" value="cardiologist">Кардиолог</option>
+              <option class="form-select__otion form-select__otion--therapist" value="therapist">Терапевт</option>
+          </select>
+      `;
 
-    let urgency = document.createElement("div");
-    urgency.classList = "input-group mb-3";
-    urgency.innerHTML = `
-        <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
-            <select class="form-select" id="inputGroupSelect01">
-                <option value="1">Обычная</option>
-                <option value="2">Приоритетная</option>
-                <option value="3">Неотложная</option>
-            </select>
-        `;
+      let urgency = document.createElement("div");
+      urgency.classList = "input-group mb-3";
+      urgency.innerHTML = `
+      <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
+          <select class="form-select" id="inputGroupSelect01">
+              <option value="1">Обычная</option>
+              <option value="2">Приоритетная</option>
+              <option value="3">Неотложная</option>
+          </select>
+      `;
 
-    let goal = document.createElement("div");
-    goal.classList = "input-group mb-3";
-    goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
-        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      let goal = document.createElement("div");
+      goal.classList = "input-group mb-3";
+      goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
+      <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
-    let description = document.createElement("div");
-    description.classList = "input-group mb-3";
-    description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
-        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      let description = document.createElement("div");
+      description.classList = "input-group mb-3";
+      description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
+      <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`
 
-    let name = document.createElement("div");
-    name.classList = "input-group";
-    name.innerHTML = `
-        <span class="input-group-text">${this.fullName}</span>
-        <input type="text" aria-label="Last name" class="form-control" placeholder="Фамилия">
-        <input type="text" aria-label="First name" class="form-control" placeholder="Имя">
-        <input type="text" aria-label="Father name" class="form-control" placeholder="Отчество">
-        `;
+      let name = document.createElement("div");
+      name.classList = "input-group mb-3";
+      name.innerHTML = `
+      <span class="input-group-text">${this.fullName}</span>
+      <input type="text" aria-label="Last name" class="form-control" placeholder="Фамилия">
+      <input type="text" aria-label="First name" class="form-control" placeholder="Имя">
+      <input type="text" aria-label="Father name" class="form-control" placeholder="Отчество">
+      `
 
-    let wrap = document.createElement("div");
-    wrap.append(doctor, urgency, goal, description, name);
-    return wrap;
-  }
-}
+      let wrap = document.createElement("div");
+      wrap.append(doctor, urgency, goal, description, name);
+      return wrap;
 
-//класс VisitDentist и т.д. нужно доделать.
-class VisitDentist extends Visit {
-  renderDentist() {
-    let dataLastVisit = document.createElement("div");
-    dataLastVisit.classList = "input-group";
-    dataLastVisit.innerHTML = `
-            <span class="input-group-text">Дата последнего визита</span>
-            <input type="text" aria-label="Last name" class="form-control" placeholder="Фамилия">
-            <input type="text" aria-label="First name" class="form-control" placeholder="Имя">
-            <input type="text" aria-label="Father name" class="form-control" placeholder="Отчество">
-            `;
-    return dataLastVisit;
   }
 }
 
-// class VisitCardiologist extends Visit{
-//     сonstructor(goal, doctor, description, urgency, fullName){
-//         super(goal, doctor, description, urgency, fullName)
+class VisitDentist extends Visit{
+  constructor(goal, doctor, description, urgency, fullName){
+      super(goal, doctor, description, urgency, fullName);
+  }
+  renderDentist(){
+      let dataLastVisit = document.createElement("div");
+      dataLastVisit.classList = "input-group mb-3";
+      dataLastVisit.innerHTML = `
+      <span class="input-group-text">Дата последнего визита</span>
+      <input type="text" aria-label="data" class="form-control" placeholder="Дата">
+      `;
+      dataLastVisit.classList.add("second-modal-body");
+      return dataLastVisit;
+  }
+}
 
-//         renderCardiologist(){
+class VisitCardiologist extends Visit{
+  constructor(goal, doctor, description, urgency, fullName){
+      super(goal, doctor, description, urgency, fullName);
+  }
+  renderCardiologist(){
+      let result=document.createElement("div");
 
-//         }
-//     }
-// }
+      let press = document.createElement("div");
+      press.classList = "input-group mb-3";
+      press.innerHTML = `
+      <span class="input-group-text">Обычное давление</span>
+      <input type="text" aria-label="Press" class="form-control" placeholder="Давление">
+      `;
 
-// class VisitTherapist extends Visit{
-//     сonstructor(goal, doctor, description, urgency, fullName){
-//         super(goal, doctor, description, urgency, fullName)
+      let indexMass = document.createElement("div");
+      indexMass.classList = "input-group mb-3";
+      indexMass.innerHTML = `
+      <span class="input-group-text">Индекс массы тела</span>
+      <input type="text" aria-label="Index" class="form-control" placeholder="Индекс массы тела">
+      `;
 
-//         renderTherapist(){
+      let diseases = document.createElement("div");
+      diseases.classList = "input-group mb-3";
+      diseases.innerHTML = `
+      <span class="input-group-text">Перенесенные заболевания сердечно-сосудистой системы</span>
+      <input type="text" aria-label="Diseasess" class="form-control" placeholder="Заболевания">
+      `;
 
-//         }
-//     }
-// }
+      let age = document.createElement("div");
+      age.classList = "input-group mb-3";
+      age.innerHTML = `
+      <span class="input-group-text">Возраст</span>
+      <input type="text" aria-label="Age" class="form-control" placeholder="Возраст">
+      `;
+      result.append(press,indexMass,diseases,age);
+      result.classList.add("second-modal-body")
+      return result;
+  }
+}
+
+class VisitTherapist extends Visit{
+  constructor(goal, doctor, description, urgency, fullName){
+      super(goal, doctor, description, urgency, fullName);
+  }
+  renderTherapist(){
+      let age = document.createElement("div");
+      age.classList = "input-group mb-3";
+      age.innerHTML = `
+      <span class="input-group-text">Возраст</span>
+      <input type="text" aria-label="Age" class="form-control" placeholder="Возраст">
+      `;
+      age.classList.add("second-modal-body");
+      return age;
+  }
+}
 
 //здесь будут создаваться запросы
 class Request {
@@ -278,6 +322,12 @@ btnSave.addEventListener("click", async (e) => {
   }
 });
 
+function contentCheckAndDelete (el){
+  if(el){
+      el.remove();
+  }
+}
+
 const visit = new Visit(
   "Цель визита",
   "Выберите врача",
@@ -296,6 +346,32 @@ createVisitBtn.addEventListener("click", (e) => {
   );
   modal2.openModal();
 
+  const formSelect=document.querySelector(".form-select");
+
+  const dentist=new VisitDentist("Цель визита", "Выберите врача", "Краткое описание", "Выберите срочность", "ФИО клиента");
+  
+  modal2.changeModal(dentist.renderDentist());
+
+  console.log(formSelect);
+  formSelect.addEventListener('change',()=>{
+      let element=document.querySelector(".second-modal-body");
+      if(formSelect.value==="dentist"){
+        console.log("дантист");
+        contentCheckAndDelete(element);
+        const dentist1=new VisitDentist("Цель визита", "Выберитеврача", "Краткое описание", "Выберите срочность", "ФИОклиента");
+        modal2.changeModal(dentist1.renderDentist());
+      }else if(formSelect.value==="cardiologist"){
+        console.log("кардиолог");
+        contentCheckAndDelete(element);
+        const cardiologist=new VisitCardiologist("Цель визита","Выберите врача", "Краткое описание", "Выберитесрочность", "ФИО клиента");
+        modal2.changeModal(cardiologist.renderCardiologist());
+      }else{
+        console.log("терапевт");
+        contentCheckAndDelete(element);
+        const therapist=new VisitTherapist("Цель визита","Выберите врача", "Краткое описание", "Выберите срочность", "ФИО клиента");
+        modal2.changeModal(therapist.renderTherapist());
+      }
+  })
   const btnSaveVisit = document.getElementById(`save-${counter}`); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
   btnSaveVisit.addEventListener("click", (e) => {
     e.preventDefault();
