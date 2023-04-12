@@ -377,17 +377,9 @@ createVisitBtn.addEventListener("click", (e) => {
     e.preventDefault();
     modal2.closeModal(); // закрыла модалку.
     console.log("здесь делаем пост запрос и выводим карточку на стену");
-
-    const card = new Card();
-    card.renderCard();
+    carder.renderCard();
   });
 });
-
-/* <h5 class="card-header">Иванов Иван Иванович</h5> 
-<div class="card-body">
- <h5 class="card-title">Доктор: стоматолог</h5>
-<a href="#" class="btn btn-primary">Показать больше</a>
-</div> */
 
 //далее идет создание карточки, данные для нее (data) возьмем из промиса. Пока ФИО и доктор - выдуманные.
 class Card {
@@ -395,19 +387,75 @@ class Card {
     //const {a, b, c , d} = data;
     const card = document.createElement("div");
     card.classList = "card card-width";
+    card.id = `card-${counter}`
     card.innerHTML = `
         <div class="card-header">
         <div class="small-buttons-container">
-        <div class="small-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg></div>
-        <div class="small-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M5.72 5.72a.75.75 0 0 1 1.06 0L12 10.94l5.22-5.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L13.06 12l5.22 5.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L12 13.06l-5.22 5.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.94 12 5.72 6.78a.75.75 0 0 1 0-1.06Z"></path></svg></div>
+        <div id='edit-${counter}' class="small-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg></div>
+        <div id='del-${counter}' class="small-button del-card"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M5.72 5.72a.75.75 0 0 1 1.06 0L12 10.94l5.22-5.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L13.06 12l5.22 5.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L12 13.06l-5.22 5.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.94 12 5.72 6.78a.75.75 0 0 1 0-1.06Z"></path></svg></div>
         </div>
         <h5>Иванов Иван Иванович</h5>
         </div>
         <div class="card-body">
          <h5 class="card-title">Доктор: стоматолог</h5>
-        <a href="#" class="btn btn-primary">Показать больше</a>
+        <a href="#" id='show-more-${counter}' class="btn btn-primary">Показать больше</a>
         </div>`;
+  
     cardContainer.prepend(card);
+
+    let showMoreBtn = document.getElementById(`show-more-${counter}`); 
+    showMoreBtn.addEventListener("click", ()=> {// клик на кнопку показать больше
+             carder.clickOnShowMore(showMoreBtn, card);
+    })
+    let delBtn = document.getElementById(`del-${counter}`);
+    let editBtn = document.getElementById(`edit-${counter}`);
+    carder.deleteCard(delBtn,card); //  метод удаления карточки 
+    carder.editCard(editBtn);  // метод изменения карточки 
     return card;
   }
-}
+
+  deleteCard(btn, element){
+    btn.addEventListener("click", () => {
+      element.remove();
+      //req.deletePost(`https://ajax.test-danit.com/api/json/posts/${id}`) сделать фетч запрос и получить ответ, есть ли такой id на сервере. 
+    //   .then(data => {
+    //      if(data.ok){
+    //         element.remove()
+    //         } else {
+    //             throw new Error("Что-то пошло не так!")
+    //         }
+    // })
+     });
+
+  }
+
+  editCard(btn){
+    
+     btn.addEventListener("click", ()=> {
+      const modal3 = new Modal("window-3", `edit-btn-${btn.id}`);
+      document.body.append(modal3.render("Редактировать карточку", visit.render(), "Отменить", "Сохранить")); // вместо visit.render() вставить форму этой карточки;
+      modal3.openModal();
+
+      //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте. 
+      let saveChanges = document.getElementById(`edit-btn-${btn.id}`);
+
+      saveChanges.addEventListener("click", ()=> {
+        console.log("отсюда полетит пост-запрос на изменение карты на сервере");
+        modal3.closeModal();
+      })
+     })
+   }
+
+
+   clickOnShowMore(btn, element){
+    let info = document.createElement("p");
+    info.textContent = "Здесь будет показано больше информации";
+    element.append(info);
+    btn.style.display = "none";
+    return info;
+   }
+ }
+
+const carder = new Card();
+
+
