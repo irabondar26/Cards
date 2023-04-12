@@ -163,7 +163,7 @@ class Visit {
     let dataOfVisit = document.createElement("div");
     dataOfVisit.classList = "input-group mb-3";
     dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
-      <input type="text" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
