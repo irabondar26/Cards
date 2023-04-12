@@ -22,6 +22,7 @@ class Modal {
 
     this.div1 = document.createElement("div");
     this.div1.classList = "modal";
+    this.div1.id = this.id;
     this.div1.tabIndex = "-1";
     const div2 = document.createElement("div");
     div2.classList = "modal-dialog";
@@ -48,6 +49,7 @@ class Modal {
     btnClose.classList = "btn btn-secondary";
     btnClose.setAttribute("data-bs-dismiss", "modal");
     btnClose.textContent = close;
+    btnClose.addEventListener("click", this.closeModal.bind(this));
     let btnSave = document.createElement("button");
     btnSave.type = "button";
     btnSave.classList = "btn btn-primary";
@@ -62,7 +64,6 @@ class Modal {
     btn.addEventListener("click", this.closeModal.bind(this));
 
     this.div1.addEventListener("click", (e) => {
-      // console.log(e.target);
       if (e.target === this.div1) {
         this.closeModal();
       }
@@ -71,11 +72,14 @@ class Modal {
     return this.div1;
   }
 
-  changeModal(body){
+  changeModal(body) {
     body.classList.add("modal-body");
-    let firstdiv=this.div1.firstChild;
-    firstdiv.firstChild.lastChild.previousElementSibling.insertAdjacentElement("afterend",body);
-}
+    let firstdiv = this.div1.firstChild;
+    firstdiv.firstChild.lastChild.previousElementSibling.insertAdjacentElement(
+      "afterend",
+      body
+    );
+  }
   openModal() {
     this.div1.style.display = "block";
   }
@@ -125,19 +129,18 @@ class Authorization {
 }
 
 //данный класс описывает общую форму для визитов
-class Visit{
-  constructor(goal, doctor, description, urgency, fullName){
-      this.goal = goal;
-      this.doctor = doctor;
-      this.description = description;
-      this.urgency = urgency;
-      this.fullName = fullName;
+class Visit {
+  constructor(goal, doctor, description, urgency, fullName) {
+    this.goal = goal;
+    this.doctor = doctor;
+    this.description = description;
+    this.urgency = urgency;
+    this.fullName = fullName;
   }
-  render(){
-  
-      let doctor = document.createElement("div");
-      doctor.classList = "input-group mb-3";
-      doctor.innerHTML = `
+  render() {
+    let doctor = document.createElement("div");
+    doctor.classList = "input-group mb-3";
+    doctor.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
           <select class="form-select visit-doctor" id="inputGroupSelect01">
               <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
@@ -146,9 +149,9 @@ class Visit{
           </select>
       `;
 
-      let urgency = document.createElement("div");
-      urgency.classList = "input-group mb-3";
-      urgency.innerHTML = `
+    let urgency = document.createElement("div");
+    urgency.classList = "input-group mb-3";
+    urgency.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
           <select class="form-select visit-ugency" id="inputGroupSelect01">
               <option value="1">Обычная</option>
@@ -157,109 +160,107 @@ class Visit{
           </select>
       `;
 
-      let dataOfVisit = document.createElement("div");
-      dataOfVisit.classList = "input-group mb-3";
-      dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
+    let dataOfVisit = document.createElement("div");
+    dataOfVisit.classList = "input-group mb-3";
+    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
       <input type="text" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
-      let goal = document.createElement("div");
-      goal.classList = "input-group mb-3";
-      goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
+    let goal = document.createElement("div");
+    goal.classList = "input-group mb-3";
+    goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
       <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
-      let description = document.createElement("div");
-      description.classList = "input-group mb-3";
-      description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
-      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`
+    let description = document.createElement("div");
+    description.classList = "input-group mb-3";
+    description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
+      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
-      let name = document.createElement("div");
-      name.classList = "input-group mb-3";
-      name.innerHTML = `
+    let name = document.createElement("div");
+    name.classList = "input-group mb-3";
+    name.innerHTML = `
       <span class="input-group-text">${this.fullName}</span>
       <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия">
       <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя">
       <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество">
-      `
+      `;
 
-      let wrap = document.createElement("div");
-      wrap.append(doctor, urgency, dataOfVisit, goal, description, name);
-      return wrap;
-
+    let wrap = document.createElement("div");
+    wrap.append(doctor, urgency, dataOfVisit, goal, description, name);
+    return wrap;
   }
 }
 
-class VisitDentist extends Visit{
-  constructor(goal, doctor, description, urgency, fullName){
-      super(goal, doctor, description, urgency, fullName);
+class VisitDentist extends Visit {
+  constructor(goal, doctor, description, urgency, fullName) {
+    super(goal, doctor, description, urgency, fullName);
   }
-  renderDentist(){
-      let dataLastVisit = document.createElement("div");
-      dataLastVisit.classList = "input-group mb-3";
-      dataLastVisit.innerHTML = `
+  renderDentist() {
+    let dataLastVisit = document.createElement("div");
+    dataLastVisit.classList = "input-group mb-3";
+    dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
       <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата">
       `;
-      dataLastVisit.classList.add("second-modal-body");
-      return dataLastVisit;
+    dataLastVisit.classList.add("second-modal-body");
+    return dataLastVisit;
   }
 }
 
-class VisitCardiologist extends Visit{
-  constructor(goal, doctor, description, urgency, fullName){
-      super(goal, doctor, description, urgency, fullName);
+class VisitCardiologist extends Visit {
+  constructor(goal, doctor, description, urgency, fullName) {
+    super(goal, doctor, description, urgency, fullName);
   }
-  renderCardiologist(){
-      let result=document.createElement("div");
+  renderCardiologist() {
+    let result = document.createElement("div");
 
-      let press = document.createElement("div");
-      press.classList = "input-group mb-3";
-      press.innerHTML = `
+    let press = document.createElement("div");
+    press.classList = "input-group mb-3";
+    press.innerHTML = `
       <span class="input-group-text">Обычное давление</span>
       <input type="text" aria-label="Press" class="form-control press" placeholder="Давление">
       `;
 
-      let indexMass = document.createElement("div");
-      indexMass.classList = "input-group mb-3";
-      indexMass.innerHTML = `
+    let indexMass = document.createElement("div");
+    indexMass.classList = "input-group mb-3";
+    indexMass.innerHTML = `
       <span class="input-group-text">Индекс массы тела</span>
       <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела">
       `;
 
-      let diseases = document.createElement("div");
-      diseases.classList = "input-group mb-3";
-      diseases.innerHTML = `
+    let diseases = document.createElement("div");
+    diseases.classList = "input-group mb-3";
+    diseases.innerHTML = `
       <span class="input-group-text">Перенесенные заболевания сердечно-сосудистой системы</span>
       <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания">
       `;
 
-      let age = document.createElement("div");
-      age.classList = "input-group mb-3";
-      age.innerHTML = `
+    let age = document.createElement("div");
+    age.classList = "input-group mb-3";
+    age.innerHTML = `
       <span class="input-group-text">Возраст</span>
       <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
       `;
-      result.append(press,indexMass,diseases,age);
-      result.classList.add("second-modal-body")
-      return result;
+    result.append(press, indexMass, diseases, age);
+    result.classList.add("second-modal-body");
+    return result;
   }
 }
 
-class VisitTherapist extends Visit{
-  constructor(goal, doctor, description, urgency, fullName){
-      super(goal, doctor, description, urgency, fullName);
+class VisitTherapist extends Visit {
+  constructor(goal, doctor, description, urgency, fullName) {
+    super(goal, doctor, description, urgency, fullName);
   }
-  renderTherapist(){
-      let age = document.createElement("div");
-      age.classList = "input-group mb-3";
-      age.innerHTML = `
+  renderTherapist() {
+    let age = document.createElement("div");
+    age.classList = "input-group mb-3";
+    age.innerHTML = `
       <span class="input-group-text">Возраст</span>
       <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
       `;
-      age.classList.add("second-modal-body");
-      return age;
+    age.classList.add("second-modal-body");
+    return age;
   }
 }
-
 
 //здесь будут создаваться запросы
 class Request {
@@ -275,18 +276,18 @@ class Request {
     return response;
   }
 
-  post(url,obj,token){
-    try{
-      let result= fetch(url,{
-        method: 'POST',
+  post(url, obj, token) {
+    try {
+      let result = fetch(url, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(obj)
+        body: JSON.stringify(obj),
       });
       return result;
-    }catch(e){
+    } catch (e) {
       console.log(e.message);
     }
   }
@@ -305,9 +306,7 @@ const pass = document.getElementById("pass");
 const createVisitBtn = document.getElementById("create-visit-btn");
 
 // контейнер для будущих карточек
-const cardContainer = document.createElement("div");
-cardContainer.classList = "card-container"; //
-document.body.append(cardContainer);
+const cardContainer = document.querySelector(".cards-wrapper");
 
 //при клике на єту кнопку проверяю пароль и вывожу на стену карточки.
 btnSave.addEventListener("click", async (e) => {
@@ -344,9 +343,9 @@ btnSave.addEventListener("click", async (e) => {
   }
 });
 
-function contentCheckAndDelete (el){
-  if(el){
-      el.remove();
+function contentCheckAndDelete(el) {
+  if (el) {
+    el.remove();
   }
 }
 
@@ -362,47 +361,85 @@ let counter = 0;
 createVisitBtn.addEventListener("click", (e) => {
   counter++;
   e.preventDefault();
+
+  let oldModal = document.getElementById("window-1");
+  if (oldModal !== null) {
+    oldModal.remove();
+  }
+
   const modal2 = new Modal("window-1", `save-${counter}`);
   document.body.append(
     modal2.render("Создать визит", visit.render(), "Закрыть", "Сохранить")
   );
   modal2.openModal();
 
-  const formSelect=document.querySelector(".form-select");
+  const formSelect = document.querySelector("#inputGroupSelect01");
 
-  const dentist=new VisitDentist("Цель визита", "Выберите врача", "Краткое описание", "Выберите срочность", "ФИО клиента");
-  
+  const dentist = new VisitDentist(
+    "Цель визита",
+    "Выберите врача",
+    "Краткое описание",
+    "Выберите срочность",
+    "ФИО клиента"
+  );
+
   modal2.changeModal(dentist.renderDentist());
 
-  formSelect.addEventListener('change',()=>{
-      let element=document.querySelector(".second-modal-body");
-      if(formSelect.value==="dentist"){
-        contentCheckAndDelete(element);
-        const dentist1=new VisitDentist("Цель визита", "Выберите врача", "Краткое описание", "Выберите срочность", "ФИОклиента");
-        modal2.changeModal(dentist1.renderDentist());
-      }else if(formSelect.value==="cardiologist"){
-        contentCheckAndDelete(element);
-        const cardiologist=new VisitCardiologist("Цель визита","Выберите врача", "Краткое описание", "Выберитесрочность", "ФИО клиента");
-        modal2.changeModal(cardiologist.renderCardiologist());
-      }else{
-        contentCheckAndDelete(element);
-        const therapist=new VisitTherapist("Цель визита","Выберите врача", "Краткое описание", "Выберите срочность", "ФИО клиента");
-        modal2.changeModal(therapist.renderTherapist());
-      }
-  })
+  formSelect.addEventListener("change", () => {
+    let element = document.querySelector(".second-modal-body");
+    if (formSelect.value === "dentist") {
+      contentCheckAndDelete(element);
+      const dentist1 = new VisitDentist(
+        "Цель визита",
+        "Выберите врача",
+        "Краткое описание",
+        "Выберите срочность",
+        "ФИОклиента"
+      );
+      modal2.changeModal(dentist1.renderDentist());
+    } else if (formSelect.value === "cardiologist") {
+      contentCheckAndDelete(element);
+      const cardiologist = new VisitCardiologist(
+        "Цель визита",
+        "Выберите врача",
+        "Краткое описание",
+        "Выберитесрочность",
+        "ФИО клиента"
+      );
+      modal2.changeModal(cardiologist.renderCardiologist());
+    } else {
+      contentCheckAndDelete(element);
+      const therapist = new VisitTherapist(
+        "Цель визита",
+        "Выберите врача",
+        "Краткое описание",
+        "Выберите срочность",
+        "ФИО клиента"
+      );
+      modal2.changeModal(therapist.renderTherapist());
+    }
+  });
 
-
-  function serchVisitInputs(){
-    let newObj={};
-    const doctor=document.querySelector('.visit-doctor').value;
-    const ugency=document.querySelector('.visit-ugency').value;
-    const data=document.querySelector('.visit-data').value;
-    const goal=document.querySelector('.visit-goal').value;
-    const description=document.querySelector('.visit-description').value;
-    const lastName=document.querySelector('.visit-lastName').value;
-    const name=document.querySelector('.visit-name').value;
-    const surname=document.querySelector('.visit-surname').value;
-    newObj={doctor,ugency,data,goal,description,lastName,name,surname};
+  function serchVisitInputs() {
+    let newObj = {};
+    const doctor = document.querySelector(".visit-doctor").value;
+    const ugency = document.querySelector(".visit-ugency").value;
+    const data = document.querySelector(".visit-data").value;
+    const goal = document.querySelector(".visit-goal").value;
+    const description = document.querySelector(".visit-description").value;
+    const lastName = document.querySelector(".visit-lastName").value;
+    const name = document.querySelector(".visit-name").value;
+    const surname = document.querySelector(".visit-surname").value;
+    newObj = {
+      doctor,
+      ugency,
+      data,
+      goal,
+      description,
+      lastName,
+      name,
+      surname,
+    };
     return newObj;
   }
 
@@ -412,59 +449,62 @@ createVisitBtn.addEventListener("click", (e) => {
     modal2.closeModal(); // закрыла модалку.
     console.log("здесь делаем пост запрос и выводим карточку на стену");
     let cardObj;
-    if(formSelect.value==="dentist"){
-      let {doctor,ugency,data,goal,description,lastName,name,surname}=serchVisitInputs();
-      const dataLastVisit=document.querySelector('.last-visit').value;
-      cardObj={
-        doctor:doctor,
-        ugency:ugency,
-        data:data,
-        goal:goal,
-        description:description,
-        lastName:lastName,
-        name:name,
-        surname:surname,
-        dataLastVisit:dataLastVisit
+    if (formSelect.value === "dentist") {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const dataLastVisit = document.querySelector(".last-visit").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        dataLastVisit: dataLastVisit,
       };
-    }else if(formSelect.value==="cardiologist"){
-      let {doctor,ugency,data,goal,description,lastName,name,surname}=serchVisitInputs();
-      const press=document.querySelector('.press').value;
-      const index=document.querySelector('.index').value;
-      const diseases=document.querySelector('.diseases').value;
-      const age=document.querySelector('.age').value;
-      cardObj={
-        doctor:doctor,
-        ugency:ugency,
-        data:data,
-        goal:goal,
-        description:description,
-        lastName:lastName,
-        name:name,
-        surname:surname,
-        press:press,
-        index:index,
-        diseases:diseases,
-        age:age
-      }
-    }else{
-      let {doctor,ugency,data,goal,description,lastName,name,surname}=serchVisitInputs();
-      const age=document.querySelector('.age').value;
-      cardObj={
-        doctor:doctor,
-        ugency:ugency,
-        data:data,
-        goal:goal,
-        description:description,
-        lastName:lastName,
-        name:name,
-        surname:surname,
-        age:age
-      }
+    } else if (formSelect.value === "cardiologist") {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const press = document.querySelector(".press").value;
+      const index = document.querySelector(".index").value;
+      const diseases = document.querySelector(".diseases").value;
+      const age = document.querySelector(".age").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        press: press,
+        index: index,
+        diseases: diseases,
+        age: age,
+      };
+    } else {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const age = document.querySelector(".age").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        age: age,
+      };
     }
-    const newRequest=new Request();
-    console.log(newRequest.post(url,cardObj,TOKEN));
-   
-    carder.renderCard();
+    const newRequest = new Request();
+    console.log(newRequest.post(url, cardObj, TOKEN));
+    const card = new Card();
+    card.renderCard();
   });
 });
 
