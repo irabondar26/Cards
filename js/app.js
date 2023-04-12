@@ -130,12 +130,13 @@ class Authorization {
 
 //данный класс описывает общую форму для визитов
 class Visit {
-  constructor(goal, doctor, description, urgency, fullName) {
+  constructor(goal, doctor, description, urgency, fullName, data) {
     this.goal = goal;
     this.doctor = doctor;
     this.description = description;
     this.urgency = urgency;
     this.fullName = fullName;
+    this.data = data;
   }
   render() {
     let doctor = document.createElement("div");
@@ -162,8 +163,8 @@ class Visit {
 
     let dataOfVisit = document.createElement("div");
     dataOfVisit.classList = "input-group mb-3";
-    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
-      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.data}</span>
+      <input type="data" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
@@ -191,8 +192,8 @@ class Visit {
 }
 
 class VisitDentist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName) {
-    super(goal, doctor, description, urgency, fullName);
+  constructor(goal, doctor, description, urgency, fullName, data) {
+    super(goal, doctor, description, urgency, fullName, data);
   }
   renderDentist() {
     let dataLastVisit = document.createElement("div");
@@ -207,8 +208,8 @@ class VisitDentist extends Visit {
 }
 
 class VisitCardiologist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName) {
-    super(goal, doctor, description, urgency, fullName);
+  constructor(goal, doctor, description, urgency, fullName, data) {
+    super(goal, doctor, description, urgency, fullName, data);
   }
   renderCardiologist() {
     let result = document.createElement("div");
@@ -247,8 +248,8 @@ class VisitCardiologist extends Visit {
 }
 
 class VisitTherapist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName) {
-    super(goal, doctor, description, urgency, fullName);
+  constructor(goal, doctor, description, urgency, fullName, data) {
+    super(goal, doctor, description, urgency, fullName, data);
   }
   renderTherapist() {
     let age = document.createElement("div");
@@ -354,7 +355,8 @@ const visit = new Visit(
   "Выберите врача",
   "Краткое описание",
   "Выберите срочность",
-  "ФИО клиента"
+  "ФИО клиента",
+  "Дата визита"
 );
 let counter = 0;
 //при клике на эту кнопку выводится модальное окно для создания визита.
@@ -380,7 +382,8 @@ createVisitBtn.addEventListener("click", (e) => {
     "Выберите врача",
     "Краткое описание",
     "Выберите срочность",
-    "ФИО клиента"
+    "ФИО клиента",
+    "Дата визита"
   );
 
   modal2.changeModal(dentist.renderDentist());
@@ -394,7 +397,8 @@ createVisitBtn.addEventListener("click", (e) => {
         "Выберите врача",
         "Краткое описание",
         "Выберите срочность",
-        "ФИОклиента"
+        "ФИОклиента",
+        "Дата визита"
       );
       modal2.changeModal(dentist1.renderDentist());
     } else if (formSelect.value === "cardiologist") {
@@ -404,7 +408,8 @@ createVisitBtn.addEventListener("click", (e) => {
         "Выберите врача",
         "Краткое описание",
         "Выберитесрочность",
-        "ФИО клиента"
+        "ФИО клиента",
+        "Дата визита"
       );
       modal2.changeModal(cardiologist.renderCardiologist());
     } else {
@@ -414,7 +419,8 @@ createVisitBtn.addEventListener("click", (e) => {
         "Выберите врача",
         "Краткое описание",
         "Выберите срочность",
-        "ФИО клиента"
+        "ФИО клиента",
+        "Дата визита"
       );
       modal2.changeModal(therapist.renderTherapist());
     }
