@@ -1,6 +1,6 @@
 /** @format */
 
-const URL = "https://ajax.test-danit.com/api/v2/cards";
+const url = "https://ajax.test-danit.com/api/v2/cards";
 const TOKEN = "787ace58-d17b-420f-b75b-29ee789e9496";
 
 const entry = document.getElementById("entry"); // это кнопка вход на главной странице. при нажатии на нее открываем модалку.
@@ -142,7 +142,7 @@ class Visit {
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
-          <select class="form-select" id="inputGroupSelect01">
+          <select class="form-select visit-doctor" id="inputGroupSelect01">
               <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
               <option class="form-select__otion form-select__otion--cardiolog" value="cardiologist">Кардиолог</option>
               <option class="form-select__otion form-select__otion--therapist" value="therapist">Терапевт</option>
@@ -153,34 +153,39 @@ class Visit {
     urgency.classList = "input-group mb-3";
     urgency.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
-          <select class="form-select" id="inputGroupSelect01">
+          <select class="form-select visit-ugency" id="inputGroupSelect01">
               <option value="1">Обычная</option>
               <option value="2">Приоритетная</option>
               <option value="3">Неотложная</option>
           </select>
       `;
 
+    let dataOfVisit = document.createElement("div");
+    dataOfVisit.classList = "input-group mb-3";
+    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
+      <input type="text" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
     goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
-      <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
     let description = document.createElement("div");
     description.classList = "input-group mb-3";
     description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
-      <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
 
     let name = document.createElement("div");
     name.classList = "input-group mb-3";
     name.innerHTML = `
       <span class="input-group-text">${this.fullName}</span>
-      <input type="text" aria-label="Last name" class="form-control" placeholder="Фамилия">
-      <input type="text" aria-label="First name" class="form-control" placeholder="Имя">
-      <input type="text" aria-label="Father name" class="form-control" placeholder="Отчество">
+      <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия">
+      <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя">
+      <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество">
       `;
 
     let wrap = document.createElement("div");
-    wrap.append(doctor, urgency, goal, description, name);
+    wrap.append(doctor, urgency, dataOfVisit, goal, description, name);
     return wrap;
   }
 }
@@ -194,7 +199,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control" placeholder="Дата">
+      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата">
       `;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
@@ -212,28 +217,28 @@ class VisitCardiologist extends Visit {
     press.classList = "input-group mb-3";
     press.innerHTML = `
       <span class="input-group-text">Обычное давление</span>
-      <input type="text" aria-label="Press" class="form-control" placeholder="Давление">
+      <input type="text" aria-label="Press" class="form-control press" placeholder="Давление">
       `;
 
     let indexMass = document.createElement("div");
     indexMass.classList = "input-group mb-3";
     indexMass.innerHTML = `
       <span class="input-group-text">Индекс массы тела</span>
-      <input type="text" aria-label="Index" class="form-control" placeholder="Индекс массы тела">
+      <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела">
       `;
 
     let diseases = document.createElement("div");
     diseases.classList = "input-group mb-3";
     diseases.innerHTML = `
       <span class="input-group-text">Перенесенные заболевания сердечно-сосудистой системы</span>
-      <input type="text" aria-label="Diseasess" class="form-control" placeholder="Заболевания">
+      <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания">
       `;
 
     let age = document.createElement("div");
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
       `;
     result.append(press, indexMass, diseases, age);
     result.classList.add("second-modal-body");
@@ -250,7 +255,7 @@ class VisitTherapist extends Visit {
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
       `;
     age.classList.add("second-modal-body");
     return age;
@@ -269,6 +274,22 @@ class Request {
     });
     let response = await request.json();
     return response;
+  }
+
+  post(url, obj, token) {
+    try {
+      let result = fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(obj),
+      });
+      return result;
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 }
 
@@ -311,7 +332,7 @@ btnSave.addEventListener("click", async (e) => {
     createVisitBtn.style.display = "block";
     try {
       const request = new Request();
-      let cards = await request.getAll(URL, TOKEN);
+      let cards = await request.getAll(url, TOKEN);
       if (cards.length !== 0 && cards !== undefined) {
         let noVisitText = document.querySelector(".main__text");
         noVisitText.style.display = "none";
@@ -364,33 +385,29 @@ createVisitBtn.addEventListener("click", (e) => {
 
   modal2.changeModal(dentist.renderDentist());
 
-  console.log(formSelect);
   formSelect.addEventListener("change", () => {
     let element = document.querySelector(".second-modal-body");
     if (formSelect.value === "dentist") {
-      console.log("дантист");
       contentCheckAndDelete(element);
       const dentist1 = new VisitDentist(
         "Цель визита",
         "Выберите врача",
         "Краткое описание",
         "Выберите срочность",
-        "ФИО клиента"
+        "ФИОклиента"
       );
       modal2.changeModal(dentist1.renderDentist());
     } else if (formSelect.value === "cardiologist") {
-      console.log("кардиолог");
       contentCheckAndDelete(element);
       const cardiologist = new VisitCardiologist(
         "Цель визита",
         "Выберите врача",
         "Краткое описание",
-        "Выберите срочность",
+        "Выберитесрочность",
         "ФИО клиента"
       );
       modal2.changeModal(cardiologist.renderCardiologist());
     } else {
-      console.log("терапевт");
       contentCheckAndDelete(element);
       const therapist = new VisitTherapist(
         "Цель визита",
@@ -402,12 +419,90 @@ createVisitBtn.addEventListener("click", (e) => {
       modal2.changeModal(therapist.renderTherapist());
     }
   });
+
+  function serchVisitInputs() {
+    let newObj = {};
+    const doctor = document.querySelector(".visit-doctor").value;
+    const ugency = document.querySelector(".visit-ugency").value;
+    const data = document.querySelector(".visit-data").value;
+    const goal = document.querySelector(".visit-goal").value;
+    const description = document.querySelector(".visit-description").value;
+    const lastName = document.querySelector(".visit-lastName").value;
+    const name = document.querySelector(".visit-name").value;
+    const surname = document.querySelector(".visit-surname").value;
+    newObj = {
+      doctor,
+      ugency,
+      data,
+      goal,
+      description,
+      lastName,
+      name,
+      surname,
+    };
+    return newObj;
+  }
+
   const btnSaveVisit = document.getElementById(`save-${counter}`); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
   btnSaveVisit.addEventListener("click", (e) => {
     e.preventDefault();
     modal2.closeModal(); // закрыла модалку.
     console.log("здесь делаем пост запрос и выводим карточку на стену");
-
+    let cardObj;
+    if (formSelect.value === "dentist") {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const dataLastVisit = document.querySelector(".last-visit").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        dataLastVisit: dataLastVisit,
+      };
+    } else if (formSelect.value === "cardiologist") {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const press = document.querySelector(".press").value;
+      const index = document.querySelector(".index").value;
+      const diseases = document.querySelector(".diseases").value;
+      const age = document.querySelector(".age").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        press: press,
+        index: index,
+        diseases: diseases,
+        age: age,
+      };
+    } else {
+      let { doctor, ugency, data, goal, description, lastName, name, surname } =
+        serchVisitInputs();
+      const age = document.querySelector(".age").value;
+      cardObj = {
+        doctor: doctor,
+        ugency: ugency,
+        data: data,
+        goal: goal,
+        description: description,
+        lastName: lastName,
+        name: name,
+        surname: surname,
+        age: age,
+      };
+    }
+    const newRequest = new Request();
+    console.log(newRequest.post(url, cardObj, TOKEN));
     const card = new Card();
     card.renderCard();
   });
