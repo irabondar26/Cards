@@ -49,7 +49,8 @@ main {
   margin: 10px;
 }
 
-.card-container {
+.cards-wrapper {
+  padding-top: 20px;
   display: flex;
   margin: 0 auto;
   max-width: 900px;
