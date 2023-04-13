@@ -291,6 +291,15 @@ class Request {
       console.log(e.message);
     }
   }
+
+  delete(token, url, cardId){
+    let result = fetch(`${url}/${cardId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+  }
 }
 
 const modal = new Modal("window", "save");
@@ -503,15 +512,19 @@ createVisitBtn.addEventListener("click", (e) => {
     }
     const newRequest = new Request();
     console.log(newRequest.post(url, cardObj, TOKEN));
-    const card = new Card();
-    card.renderCard();
+
+    newRequest.post(url, cardObj, TOKEN)      
+    .then(response => response.json())
+    .then(data => carder.renderCard(data))
+    ;
   });
 });
 
-//далее идет создание карточки, данные для нее (data) возьмем из промиса. Пока ФИО и доктор - выдуманные.
+//далее идет создание карточки.
 class Card {
-  renderCard() {
-    //const {a, b, c , d} = data;
+  renderCard(promise) {
+    const {lastName, name, surname, doctor, age, diseases, index, data, press, goal, description, ugency} = promise;
+    console.log(promise);
     const card = document.createElement("div");
     card.classList = "card card-width";
     card.id = `card-${counter}`
@@ -521,10 +534,10 @@ class Card {
         <div id='edit-${counter}' class="small-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg></div>
         <div id='del-${counter}' class="small-button del-card"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M5.72 5.72a.75.75 0 0 1 1.06 0L12 10.94l5.22-5.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L13.06 12l5.22 5.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L12 13.06l-5.22 5.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.94 12 5.72 6.78a.75.75 0 0 1 0-1.06Z"></path></svg></div>
         </div>
-        <h5>Иванов Иван Иванович</h5>
+        <h5>${lastName} ${name} ${surname}</h5>
         </div>
         <div class="card-body">
-         <h5 class="card-title">Доктор: стоматолог</h5>
+         <h5 class="card-title">Доктор: ${getDoctor(doctor)}</h5>
         <a href="#" id='show-more-${counter}' class="btn btn-primary">Показать больше</a>
         </div>`;
   
@@ -532,7 +545,7 @@ class Card {
 
     let showMoreBtn = document.getElementById(`show-more-${counter}`); 
     showMoreBtn.addEventListener("click", ()=> {// клик на кнопку показать больше
-             carder.clickOnShowMore(showMoreBtn, card);
+             carder.clickOnShowMore(showMoreBtn, card, doctor, age, diseases, index, press, data, goal, description, ugency);
     })
     let delBtn = document.getElementById(`del-${counter}`);
     let editBtn = document.getElementById(`edit-${counter}`);
@@ -573,14 +586,63 @@ class Card {
      })
    }
 
+   clickOnShowMore(btn, element, doctor, age, diseases, index, press, data, goal, description, ugency){
+    let info = document.createElement("div");
+    if(doctor === "dentist"){
+      info.innerHTML = `<ul class="list-group list-group-flush">
+      ${getClientInfo(data, goal, ugency, description)}
+      </ul>`;
+    } else if(doctor === "cardiologist"){
+      info.innerHTML = `<ul class="list-group list-group-flush">
+      ${getClientInfo(data, goal, ugency, description)}
+      <li class="list-group-item">Возраст: ${age}</li>
+      <li class="list-group-item">ИМТ: ${index}</li>
+      <li class="list-group-item">Заболевания: ${diseases}</li>
+      <li class="list-group-item">Давление: ${press}</li>
+      </ul>
+      `
+    } else {
+      info.innerHTML = `<ul class="list-group list-group-flush">
+      ${getClientInfo(data, goal, ugency, description)}
+      <li class="list-group-item">Возраст: ${age}</li>
+      </ul>`
+    }
 
-   clickOnShowMore(btn, element){
-    let info = document.createElement("p");
-    info.textContent = "Здесь будет показано больше информации";
     element.append(info);
     btn.style.display = "none";
     return info;
    }
+ }
+
+ //функция для создания доп-инфо в карточке
+ function getClientInfo(data, goal, ugency, description){
+  return `<li class="list-group-item">Дата визита: ${data}</li>
+    <li class="list-group-item">Цель визита: ${goal}</li>
+    <li class="list-group-item">Срочность визита: ${getUrgency(ugency)}</li>
+    <li class="list-group-item">Описание визита: ${description}</li>`
+ }
+
+
+ // функция для корректного отображения доктора в карточке. 
+ function getDoctor(doctor){
+  if(doctor === "dentist"){
+     return "Стоматолог";
+  } else if(doctor === "cardiologist"){
+    return "Кардиолог";
+  } else {
+      return "Терапевт";
+  }
+ }
+
+// функция для корректного отображения срочности в карточке.
+ function getUrgency(ugency){
+  if(ugency === "1"){
+    return "Обычная";
+ } else if(ugency === "2"){
+   return "Приоритетная";
+ } else {
+     return "Неотложная";
+ }
  }
 
 const carder = new Card();
