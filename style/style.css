@@ -22,6 +22,7 @@ main {
   font-weight: 600;
   color: red;
   margin-top: 30px;
+  grid-column-start: 2;
 }
 
 .active {
@@ -52,12 +53,11 @@ main {
 
 .cards-wrapper {
   padding-top: 20px;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
   max-width: 900px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items:start;
 }
 .small-buttons-container {
   display: flex;

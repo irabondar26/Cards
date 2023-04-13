@@ -130,15 +130,16 @@ class Authorization {
 
 //данный класс описывает общую форму для визитов
 class Visit {
-  constructor(goal, doctor, description, urgency, fullName, data) {
+  constructor(goal, doctor, description, urgency, fullName, data, body = '') {
     this.goal = goal;
     this.doctor = doctor;
     this.description = description;
     this.urgency = urgency;
     this.fullName = fullName;
     this.data = data;
+    this.body = body;
   }
-  render() {
+  render(body="") {
     let doctor = document.createElement("div");
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
@@ -186,7 +187,7 @@ class Visit {
       `;
 
     let wrap = document.createElement("div");
-    wrap.append(doctor, urgency, dataOfVisit, goal, description, name);
+    wrap.append(doctor, urgency, dataOfVisit, goal, description, name, body);
     return wrap;
   }
 }
@@ -293,13 +294,37 @@ class Request {
     }
   }
 
-  delete(token, url, cardId){
-    let result = fetch(`${url}/${cardId}`, {
+  delete(token, url, cardId, obj){
+    try{
+      let result = fetch(`${url}/${cardId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
       },
-    })
+    });
+    return result;
+    } catch(e){
+      console.log(e.message);
+    }
+  }
+
+  put(token, url, cardId, obj){
+    try{
+     let result = fetch(`${url}/${cardId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(obj)
+    });
+    return result;
+    } catch(e){
+      console.log(e.message);
+    }
+    
+  // .then(response => response.json())
+  // .then(response => console.log(response))
   }
 }
 
@@ -373,12 +398,12 @@ createVisitBtn.addEventListener("click", (e) => {
   counter++;
   e.preventDefault();
 
-  let oldModal = document.getElementById("window-1");
+  let oldModal = document.getElementById("window-visit");
   if (oldModal !== null) {
     oldModal.remove();
   }
 
-  const modal2 = new Modal("window-1", `save-${counter}`);
+  const modal2 = new Modal("window-visit", `save-${counter}`);
   document.body.append(
     modal2.render("Создать визит", visit.render(), "Закрыть", "Сохранить")
   );
@@ -416,7 +441,7 @@ createVisitBtn.addEventListener("click", (e) => {
         "Цель визита",
         "Выберите врача",
         "Краткое описание",
-        "Выберитесрочность",
+        "Выберите срочность",
         "ФИО клиента",
         "Дата визита"
       );
@@ -522,15 +547,15 @@ createVisitBtn.addEventListener("click", (e) => {
     newRequest.post(url, cardObj, TOKEN)      
     .then(response => response.json())
     .then(data => carder.renderCard(data))
-    ;
   });
 });
+
+let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять. 
 
 //далее идет создание карточки.
 class Card {
   renderCard(promise) {
-    const {lastName, name, surname, doctor, age, diseases, index, data, press, goal, description, ugency} = promise;
-    console.log(promise);
+    const {lastName, name, surname, doctor, age, diseases, index, data, press, goal, description, ugency, id} = promise;
     const card = document.createElement("div");
     card.classList = "card card-width";
     card.id = `card-${counter}`
@@ -555,43 +580,57 @@ class Card {
     })
     let delBtn = document.getElementById(`del-${counter}`);
     let editBtn = document.getElementById(`edit-${counter}`);
-    carder.deleteCard(delBtn,card); //  метод удаления карточки 
-    carder.editCard(editBtn);  // метод изменения карточки 
+    let doctorName = document.querySelector(".card-title");
+    carder.deleteCard(delBtn, card, id); //  метод удаления карточки 
+    carder.editCard(editBtn, doctorName, id);  // метод изменения карточки 
     return card;
   }
 
-  deleteCard(btn, element){
+  deleteCard(btn, element, cardId){
     btn.addEventListener("click", () => {
-      element.remove();
-      //req.deletePost(`https://ajax.test-danit.com/api/json/posts/${id}`) сделать фетч запрос и получить ответ, есть ли такой id на сервере. 
-    //   .then(data => {
-    //      if(data.ok){
-    //         element.remove()
-    //         } else {
-    //             throw new Error("Что-то пошло не так!")
-    //         }
-    // })
+     const requestDelete = new Request();
+     requestDelete.delete(TOKEN, url, cardId)
+     .then(response => {
+      if(response.status === 200){
+        element.remove();
+      } else {
+        console.log(new Error("Что-то пошло не так!"));
+      }
+     })
      });
 
   }
 
-  editCard(btn){
-    
-     btn.addEventListener("click", ()=> {
-      const modal3 = new Modal("window-3", `edit-btn-${btn.id}`);
-      document.body.append(modal3.render("Редактировать карточку", visit.render(), "Отменить", "Сохранить")); // вместо visit.render() вставить форму этой карточки;
+  
+  editCard(btn, doctor, cardId){
+     
+     btn.addEventListener("click", () => {
+      
+      counter1++;
+      const modal3 = new Modal(`window-${counter1}`, `edit-btn-${counter1}`);
+      document.body.append(modal3.render("Редактировать карточку", visit.render(cardEditForm(doctor)), "Отменить", "Сохранить"));
       modal3.openModal();
+let modalBody = document.getElementById(`window-${counter1}`);
 
+
+modalBody.addEventListener("change", (e)=> {
+        console.log(e.target.value, e.currentTarget);
+  
+})
+
+
+           
       //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте. 
-      let saveChanges = document.getElementById(`edit-btn-${btn.id}`);
+      let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
       saveChanges.addEventListener("click", ()=> {
-        console.log("отсюда полетит пост-запрос на изменение карты на сервере");
+        console.log("отсюда полетит put-запрос на изменение карты на сервере");
         modal3.closeModal();
       })
      })
    }
 
+   // далее идет нажатие на кнопку Показать больше
    clickOnShowMore(btn, element, doctor, age, diseases, index, press, data, goal, description, ugency){
     let info = document.createElement("div");
     if(doctor === "dentist"){
@@ -628,7 +667,6 @@ class Card {
     <li class="list-group-item">Описание визита: ${description}</li>`
  }
 
-
  // функция для корректного отображения доктора в карточке. 
  function getDoctor(doctor){
   if(doctor === "dentist"){
@@ -650,6 +688,41 @@ class Card {
      return "Неотложная";
  }
  }
+
+ //функция для изменения формы в модалке редактирования карты
+ function cardEditForm(doctor){
+  if(doctor.textContent.includes("Стоматолог")){
+    const dentist1 = new VisitDentist(
+      "Цель визита",
+      "Выберите врача",
+      "Краткое описание",
+      "Выберите срочность",
+      "ФИО клиента",
+      "Дата визита"
+    );
+  return dentist1.renderDentist(); 
+  } else if(doctor.textContent.includes("Кардиолог")){
+    const cardiologist1 = new VisitCardiologist(
+      "Цель визита",
+      "Выберите врача",
+      "Краткое описание",
+      "Выберите срочность",
+      "ФИО клиента",
+      "Дата визита"
+    );
+    return cardiologist1.renderCardiologist();
+  } else {
+    const therapist1 = new VisitTherapist(
+      "Цель визита",
+      "Выберите врача",
+      "Краткое описание",
+      "Выберите срочность",
+      "ФИО клиента",
+      "Дата визита"
+    );
+    return therapist1.renderTherapist();
+  }
+}
 
 const carder = new Card();
 
