@@ -20,7 +20,7 @@ class Modal {
   render(header = "", body, close = "", save = "") {
     // метод который делает модалку общую для всех форм. при вызове метода render в парметр body добавляем нужную форму.
 
-    this.div1 = document.createElement("div");
+    this.div1 = document.createElement("form");
     this.div1.classList = "modal";
     this.div1.id = this.id;
     this.div1.tabIndex = "-1";
@@ -50,8 +50,8 @@ class Modal {
     btnClose.setAttribute("data-bs-dismiss", "modal");
     btnClose.textContent = close;
     btnClose.addEventListener("click", this.closeModal.bind(this));
-    let btnSave = document.createElement("button");
-    btnSave.type = "button";
+    let btnSave = document.createElement("input");
+    btnSave.type = "submit";
     btnSave.classList = "btn btn-primary";
     btnSave.textContent = save;
     btnSave.id = this.idSaveBtn; // добавлю id к какждой кнопке "сохранить" в модалке, чтобы потом искать ее и вешать обработчик
@@ -144,7 +144,7 @@ class Visit {
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
-          <select class="form-select visit-doctor" id="inputGroupSelect01">
+          <select class="form-select visit-doctor" id="inputGroupSelect01" required>
               <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
               <option class="form-select__otion form-select__otion--cardiolog" value="cardiologist">Кардиолог</option>
               <option class="form-select__otion form-select__otion--therapist" value="therapist">Терапевт</option>
@@ -155,7 +155,7 @@ class Visit {
     urgency.classList = "input-group mb-3";
     urgency.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
-          <select class="form-select visit-ugency" id="inputGroupSelect01">
+          <select class="form-select visit-ugency" id="inputGroupSelect01" required>
               <option value="1">Обычная</option>
               <option value="2">Приоритетная</option>
               <option value="3">Неотложная</option>
@@ -165,25 +165,25 @@ class Visit {
     let dataOfVisit = document.createElement("div");
     dataOfVisit.classList = "input-group mb-3";
     dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.data}</span>
-      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
     goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
-      <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let description = document.createElement("div");
     description.classList = "input-group mb-3";
     description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
-      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let name = document.createElement("div");
     name.classList = "input-group mb-3";
     name.innerHTML = `
       <span class="input-group-text">${this.fullName}</span>
-      <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия">
-      <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя">
-      <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество">
+      <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия" required>
+      <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя" required>
+      <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество" required>
       `;
 
     let wrap = document.createElement("div");
@@ -201,7 +201,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата">
+      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>
       `;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
@@ -219,28 +219,28 @@ class VisitCardiologist extends Visit {
     press.classList = "input-group mb-3";
     press.innerHTML = `
       <span class="input-group-text">Обычное давление</span>
-      <input type="text" aria-label="Press" class="form-control press" placeholder="Давление">
+      <input type="text" aria-label="Press" class="form-control press" placeholder="Давление" required>
       `;
 
     let indexMass = document.createElement("div");
     indexMass.classList = "input-group mb-3";
     indexMass.innerHTML = `
       <span class="input-group-text">Индекс массы тела</span>
-      <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела">
+      <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела" required>
       `;
 
     let diseases = document.createElement("div");
     diseases.classList = "input-group mb-3";
     diseases.innerHTML = `
       <span class="input-group-text">Перенесенные заболевания сердечно-сосудистой системы</span>
-      <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания">
+      <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания" required>
       `;
 
     let age = document.createElement("div");
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст" required>
       `;
     result.append(press, indexMass, diseases, age);
     result.classList.add("second-modal-body");
@@ -257,7 +257,7 @@ class VisitTherapist extends Visit {
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст" required>
       `;
     age.classList.add("second-modal-body");
     return age;
@@ -480,8 +480,10 @@ createVisitBtn.addEventListener("click", (e) => {
     return newObj;
   }
 
-  const btnSaveVisit = document.getElementById(`save-${counter}`); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
-  btnSaveVisit.addEventListener("click", (e) => {
+  const form = document.getElementById("window-visit"); // при submite этой формы будем делать пост-запрос на создание карточки.
+
+  //const btnSaveVisit = document.getElementById(`save-${counter}`);
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     modal2.closeModal(); 
     console.log("здесь делаем пост запрос и выводим карточку на стену");
@@ -544,7 +546,6 @@ createVisitBtn.addEventListener("click", (e) => {
     newRequest.post(url, cardObj, TOKEN)      
     .then(response => response.json())
     .then(data => carder.renderCard(data));
-    
   });
 });
 
@@ -670,9 +671,10 @@ return obj;
  }
 
       //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте. 
-let saveChanges = document.getElementById(`edit-btn-${counter1}`);
+let formEdit = document.getElementById("window-edit");
+//let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
-saveChanges.addEventListener("click", (e)=> {
+formEdit.addEventListener("submit", (e)=> {
         e.preventDefault();
         console.log(getValueInputs());
         modal3.closeModal();
