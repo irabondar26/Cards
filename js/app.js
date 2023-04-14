@@ -488,7 +488,7 @@ createVisitBtn.addEventListener("click", (e) => {
     if (formSelect.value === "dentist") {
       let { doctor, ugency, data, goal, description, lastName, name, surname } =
         serchVisitInputs();
-      const dataLastVisit = document.querySelector(".visit-dataLastVisit").value;
+      const dataLastVisit = document.querySelector(".last-visit").value;
       cardObj = {
         doctor: doctor,
         ugency: ugency,
