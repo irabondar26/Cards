@@ -20,7 +20,7 @@ class Modal {
   render(header = "", body, close = "", save = "") {
     // метод который делает модалку общую для всех форм. при вызове метода render в парметр body добавляем нужную форму.
 
-    this.div1 = document.createElement("div");
+    this.div1 = document.createElement("form");
     this.div1.classList = "modal";
     this.div1.id = this.id;
     this.div1.tabIndex = "-1";
@@ -50,8 +50,8 @@ class Modal {
     btnClose.setAttribute("data-bs-dismiss", "modal");
     btnClose.textContent = close;
     btnClose.addEventListener("click", this.closeModal.bind(this));
-    let btnSave = document.createElement("button");
-    btnSave.type = "button";
+    let btnSave = document.createElement("input");
+    btnSave.type = "submit";
     btnSave.classList = "btn btn-primary";
     btnSave.textContent = save;
     btnSave.id = this.idSaveBtn; // добавлю id к какждой кнопке "сохранить" в модалке, чтобы потом искать ее и вешать обработчик
@@ -144,7 +144,7 @@ class Visit {
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
-          <select class="form-select visit-doctor" id="inputGroupSelect01">
+          <select class="form-select visit-doctor" id="inputGroupSelect01" required>
               <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
               <option class="form-select__otion form-select__otion--cardiolog" value="cardiologist">Кардиолог</option>
               <option class="form-select__otion form-select__otion--therapist" value="therapist">Терапевт</option>
@@ -155,7 +155,7 @@ class Visit {
     urgency.classList = "input-group mb-3";
     urgency.innerHTML = `
       <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
-          <select class="form-select visit-ugency" id="inputGroupSelect01">
+          <select class="form-select visit-ugency" id="inputGroupSelect01" required>
               <option value="1">Обычная</option>
               <option value="2">Приоритетная</option>
               <option value="3">Неотложная</option>
@@ -165,25 +165,25 @@ class Visit {
     let dataOfVisit = document.createElement("div");
     dataOfVisit.classList = "input-group mb-3";
     dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.data}</span>
-      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
     goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
-      <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let description = document.createElement("div");
     description.classList = "input-group mb-3";
     description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
-      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+      <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let name = document.createElement("div");
     name.classList = "input-group mb-3";
     name.innerHTML = `
       <span class="input-group-text">${this.fullName}</span>
-      <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия">
-      <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя">
-      <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество">
+      <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия" required>
+      <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя" required>
+      <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество" required>
       `;
 
     let wrap = document.createElement("div");
@@ -201,8 +201,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="date" aria-label="data" class="form-control last-visit" placeholder="Дата">
-      `;
+      <input type="date" aria-label="data" class="form-control last-visit" placeholder="Дата" required>`;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
   }
@@ -219,28 +218,28 @@ class VisitCardiologist extends Visit {
     press.classList = "input-group mb-3";
     press.innerHTML = `
       <span class="input-group-text">Обычное давление</span>
-      <input type="text" aria-label="Press" class="form-control press" placeholder="Давление">
+      <input type="text" aria-label="Press" class="form-control press" placeholder="Давление" required>
       `;
 
     let indexMass = document.createElement("div");
     indexMass.classList = "input-group mb-3";
     indexMass.innerHTML = `
       <span class="input-group-text">Индекс массы тела</span>
-      <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела">
+      <input type="text" aria-label="Index" class="form-control index" placeholder="Индекс массы тела" required>
       `;
 
     let diseases = document.createElement("div");
     diseases.classList = "input-group mb-3";
     diseases.innerHTML = `
       <span class="input-group-text">Перенесенные заболевания сердечно-сосудистой системы</span>
-      <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания">
+      <input type="text" aria-label="Diseasess" class="form-control diseases" placeholder="Заболевания" required>
       `;
 
     let age = document.createElement("div");
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст" required>
       `;
     result.append(press, indexMass, diseases, age);
     result.classList.add("second-modal-body");
@@ -257,7 +256,7 @@ class VisitTherapist extends Visit {
     age.classList = "input-group mb-3";
     age.innerHTML = `
       <span class="input-group-text">Возраст</span>
-      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст">
+      <input type="text" aria-label="Age" class="form-control age" placeholder="Возраст" required>
       `;
     age.classList.add("second-modal-body");
     return age;
@@ -293,7 +292,7 @@ class Request {
     }
   }
 
-  delete(token, url, cardId, obj) {
+  delete(token, url, cardId) {
     try {
       let result = fetch(`${url}/${cardId}`, {
         method: "DELETE",
@@ -321,9 +320,6 @@ class Request {
     } catch (e) {
       console.log(e.message);
     }
-
-    // .then(response => response.json())
-    // .then(response => console.log(response))
   }
 }
 
@@ -527,37 +523,39 @@ createVisitBtn.addEventListener("click", (e) => {
 
   function serchVisitInputs() {
     let newObj = {};
-    const doctor = document.querySelector(".visit-doctor").value;
-    const ugency = document.querySelector(".visit-ugency").value;
-    const data = document.querySelector(".visit-data").value;
-    const goal = document.querySelector(".visit-goal").value;
-    const description = document.querySelector(".visit-description").value;
-    const lastName = document.querySelector(".visit-lastName").value;
-    const name = document.querySelector(".visit-name").value;
-    const surname = document.querySelector(".visit-surname").value;
+    let doctor = document.querySelector(".visit-doctor");
+    let ugency = document.querySelector(".visit-ugency");
+    let data = document.querySelector(".visit-data");
+    let goal = document.querySelector(".visit-goal");
+    let description = document.querySelector(".visit-description");
+    let lastName = document.querySelector(".visit-lastName");
+    let name = document.querySelector(".visit-name");
+    let surname = document.querySelector(".visit-surname");
     newObj = {
-      doctor,
-      ugency,
-      data,
-      goal,
-      description,
-      lastName,
-      name,
-      surname,
+      doctor: doctor.value,
+      ugency: ugency.value,
+      data: data.value,
+      goal: goal.value,
+      description: description.value,
+      lastName: lastName.value,
+      name: name.value,
+      surname: surname.value,
     };
     return newObj;
   }
 
-  const btnSaveVisit = document.getElementById(`save-${counter}`); // кнопка сохранить в модалке создания визита. при нажатии на нее - пост запрос и создание карточки
-  btnSaveVisit.addEventListener("click", (e) => {
+  const form = document.getElementById("window-visit"); // при submite этой формы будем делать пост-запрос на создание карточки.
+
+  //const btnSaveVisit = document.getElementById(`save-${counter}`);
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    modal2.closeModal(); // закрыла модалку.
-    console.log("здесь делаем пост запрос и выводим карточку на стену");
     let cardObj;
     if (formSelect.value === "dentist") {
       let { doctor, ugency, data, goal, description, lastName, name, surname } =
         serchVisitInputs();
-      const dataLastVisit = document.querySelector(".last-visit").value;
+      const dataLastVisit = document.querySelector(
+        ".visit-dataLastVisit"
+      ).value;
       cardObj = {
         doctor: doctor,
         ugency: ugency,
@@ -607,12 +605,12 @@ createVisitBtn.addEventListener("click", (e) => {
       };
     }
     const newRequest = new Request();
-    console.log(newRequest.post(url, cardObj, TOKEN));
-
     newRequest
       .post(url, cardObj, TOKEN)
+
       .then((response) => response.json())
       .then((data) => carder.renderCard(data));
+    modal2.closeModal();
   });
 });
 
@@ -645,7 +643,7 @@ class Card {
         <div id='edit-${counter}' class="small-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg></div>
         <div id='del-${counter}' class="small-button del-card"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M5.72 5.72a.75.75 0 0 1 1.06 0L12 10.94l5.22-5.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L13.06 12l5.22 5.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L12 13.06l-5.22 5.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.94 12 5.72 6.78a.75.75 0 0 1 0-1.06Z"></path></svg></div>
         </div>
-        <h5>${lastName} ${name} ${surname}</h5>
+        <h5 id="name-${counter}">${lastName} ${name} ${surname}</h5>
         </div>
         <div class="card-body">
          <h5 class="card-title">Доктор: ${getDoctor(doctor)}</h5>
@@ -674,8 +672,9 @@ class Card {
     let delBtn = document.getElementById(`del-${counter}`);
     let editBtn = document.getElementById(`edit-${counter}`);
     let doctorName = document.querySelector(".card-title");
+    let nameClient = document.getElementById(`name-${counter}`);
     carder.deleteCard(delBtn, card, id); //  метод удаления карточки
-    carder.editCard(editBtn, doctorName, id); // метод изменения карточки
+    carder.editCard(editBtn, doctorName, id, card, nameClient, showMoreBtn); // метод изменения карточки
     return card;
   }
 
@@ -692,31 +691,243 @@ class Card {
     });
   }
 
-  editCard(btn, doctor, cardId) {
+  editCard(btn, doctorStatus, cardId, card, nameClient, showMoreBtn) {
     btn.addEventListener("click", () => {
       counter1++;
-      const modal3 = new Modal(`window-${counter1}`, `edit-btn-${counter1}`);
+      const modal3 = new Modal(`window-edit`, `edit-btn-${counter1}`);
       document.body.append(
         modal3.render(
           "Редактировать карточку",
-          visit.render(cardEditForm(doctor)),
+          visit.render(cardEditForm(doctorStatus)),
           "Отменить",
           "Сохранить"
         )
       );
       modal3.openModal();
-      let modalBody = document.getElementById(`window-${counter1}`);
 
-      modalBody.addEventListener("change", (e) => {
-        console.log(e.target.value, e.currentTarget);
+      let doctorSelect = document.querySelectorAll(".visit-doctor");
+      let arr = Array.from(doctorSelect);
+      let lastSelect = arr.at(-1);
+
+      const dentist2 = new VisitDentist(
+        "Цель визита",
+        "Выберите врача",
+        "Краткое описание",
+        "Выберите срочность",
+        "ФИО клиента",
+        "Дата визита"
+      );
+
+      modal3.changeModal(dentist2.renderDentist());
+
+      // отслеживаю изменения в окне "Редактировать карточку" при смене врача.
+      lastSelect.addEventListener("change", (e) => {
+        let secondBody = document.querySelectorAll(".second-modal-body");
+
+        if (e.target.value === "dentist") {
+          let dentist3 = new VisitDentist();
+          secondBody.forEach((el) => el.remove());
+          modal3.changeModal(dentist3.renderDentist());
+          lastSelect = e.target.value;
+        } else if (e.target.value === "cardiologist") {
+          let cardiologist2 = new VisitCardiologist();
+          secondBody.forEach((el) => el.remove());
+          modal3.changeModal(cardiologist2.renderCardiologist());
+          lastSelect = e.target.value;
+        } else {
+          let therapist2 = new VisitTherapist();
+          secondBody.forEach((el) => el.remove());
+          modal3.changeModal(therapist2.renderTherapist());
+          lastSelect = e.target.value;
+        }
+        return lastSelect;
       });
 
-      //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте.
-      let saveChanges = document.getElementById(`edit-btn-${counter1}`);
+      function getValueInputs() {
+        let obj = {};
+        let goal = getLastValue(".visit-goal");
+        let ugency = getLastValue(".visit-ugency");
+        let data = getLastValue(".visit-data");
+        let description = getLastValue(".visit-description");
+        let lastName = getLastValue(".visit-lastName");
+        let name = getLastValue(".visit-name");
+        let surname = getLastValue(".visit-surname");
 
-      saveChanges.addEventListener("click", () => {
-        console.log("отсюда полетит put-запрос на изменение карты на сервере");
+        obj = {
+          goal: goal.value,
+          ugency: ugency.value,
+          data: data.value,
+          description: description.value,
+          lastName: lastName.value,
+          name: name.value,
+          surname: surname.value,
+          doctor: lastSelect,
+        };
+        return obj;
+      }
+
+      //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте.
+      let formEdit = document.getElementById("window-edit");
+      //let saveChanges = document.getElementById(`edit-btn-${counter1}`);
+
+      formEdit.addEventListener("submit", (e) => {
+        e.preventDefault();
+        console.log(getValueInputs());
         modal3.closeModal();
+        let fullobj;
+        if (lastSelect === "dentist") {
+          let {
+            goal,
+            doctor,
+            ugency,
+            data,
+            description,
+            lastName,
+            name,
+            surname,
+          } = getValueInputs();
+          let lastVisit = getLastValue(".last-visit");
+
+          fullobj = {
+            goal: goal,
+            ugency: ugency,
+            data: data,
+            description: description,
+            lastName: lastName,
+            name: name,
+            surname: surname,
+            doctor: doctor,
+            dataLastVisit: lastVisit.value,
+          };
+        } else if (lastSelect === "cardiologist") {
+          let {
+            goal,
+            doctor,
+            ugency,
+            data,
+            description,
+            lastName,
+            name,
+            surname,
+          } = getValueInputs();
+          let press = getLastValue(".press");
+          let age = getLastValue(".age");
+          let index = getLastValue(".index");
+          let diseases = getLastValue(".diseases");
+
+          fullobj = {
+            goal: goal,
+            ugency: ugency,
+            data: data,
+            description: description,
+            lastName: lastName,
+            name: name,
+            surname: surname,
+            doctor: doctor,
+            press: press.value,
+            index: index.value,
+            diseases: diseases.value,
+            age: age.value,
+          };
+        } else {
+          let {
+            goal,
+            doctor,
+            ugency,
+            data,
+            description,
+            lastName,
+            name,
+            surname,
+          } = getValueInputs();
+          let age = getLastValue(".age");
+
+          fullobj = {
+            goal: goal,
+            ugency: ugency,
+            data: data,
+            description: description,
+            lastName: lastName,
+            name: name,
+            surname: surname,
+            doctor: doctor,
+            age: age.value,
+          };
+        }
+        console.log(fullobj);
+        const putRequest = new Request();
+        putRequest
+          .put(TOKEN, url, cardId, fullobj)
+          .then((response) => response.json())
+          .then((obj) => {
+            let {
+              lastName,
+              name,
+              surname,
+              doctor,
+              age,
+              diseases,
+              index,
+              data,
+              press,
+              goal,
+              description,
+              ugency,
+            } = obj;
+            nameClient.textContent = `${lastName} ${name} ${surname}`;
+            doctorStatus.textContent = `${getDoctor(doctor)}`;
+            let listGroup = document.querySelector(".list-group");
+            if (listGroup === null) {
+              showMoreBtn.addEventListener("click", () => {
+                // клик на кнопку показать больше
+                let listGroups = document.querySelectorAll(".list-group");
+                listGroups.forEach((el) => {
+                  el.remove();
+                });
+
+                let carder3 = new Card();
+                carder3.clickOnShowMore(
+                  showMoreBtn,
+                  card,
+                  doctor,
+                  age,
+                  diseases,
+                  index,
+                  press,
+                  data,
+                  goal,
+                  description,
+                  ugency
+                );
+              });
+            } else {
+              let listGroups = document.querySelectorAll(".list-group");
+              listGroups.forEach((el) => {
+                el.remove();
+              });
+              //listGroup.remove();
+              let carder2 = new Card();
+              carder2.clickOnShowMore(
+                btn,
+                card,
+                doctor,
+                age,
+                diseases,
+                index,
+                press,
+                data,
+                goal,
+                description,
+                ugency
+              );
+              btn.style.display = "flex";
+            }
+          });
+
+        let oldModal = document.getElementById("window-edit");
+        if (oldModal !== null) {
+          oldModal.remove();
+        }
       });
     });
   }
@@ -825,6 +1036,18 @@ function cardEditForm(doctor) {
     );
     return therapist1.renderTherapist();
   }
+}
+
+//ищу значение в инпуте при редактировании карты
+function getLastValue(classes) {
+  let current = document.querySelectorAll(classes);
+  let arrofCurrent = Array.from(current);
+  let lastCurrent = arrofCurrent.at(-1);
+  lastCurrent.addEventListener("change", (e) => {
+    lastCurrent = e.target.value;
+    console.log(lastCurrent);
+  });
+  return lastCurrent;
 }
 
 const carder = new Card();
