@@ -1,7 +1,7 @@
 /** @format */
 
 const url = "https://ajax.test-danit.com/api/v2/cards";
-const TOKEN = "787ace58-d17b-420f-b75b-29ee789e9496";
+let TOKEN; // Токен получаю при авторизации
 
 const entry = document.getElementById("entry"); // это кнопка вход на главной странице. при нажатии на нее открываем модалку.
 entry.addEventListener("click", (e) => {
@@ -130,7 +130,7 @@ class Authorization {
 
 //данный класс описывает общую форму для визитов
 class Visit {
-  constructor(goal, doctor, description, urgency, fullName, data, body = '') {
+  constructor(goal, doctor, description, urgency, fullName, data, body = "") {
     this.goal = goal;
     this.doctor = doctor;
     this.description = description;
@@ -139,7 +139,7 @@ class Visit {
     this.data = data;
     this.body = body;
   }
-  render(body="") {
+  render(body = "") {
     let doctor = document.createElement("div");
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
@@ -201,7 +201,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата">
+      <input type="date" aria-label="data" class="form-control last-visit" placeholder="Дата">
       `;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
@@ -267,7 +267,6 @@ class VisitTherapist extends Visit {
 //здесь будут создаваться запросы
 class Request {
   async getAll(url, token) {
-    // это запрос на получение всех карточек с сервера
     let request = await fetch(url, {
       method: "GET",
       headers: {
@@ -294,37 +293,98 @@ class Request {
     }
   }
 
-  delete(token, url, cardId, obj){
-    try{
+  delete(token, url, cardId, obj) {
+    try {
       let result = fetch(`${url}/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-    });
-    return result;
-    } catch(e){
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return result;
+    } catch (e) {
       console.log(e.message);
     }
   }
 
-  put(token, url, cardId, obj){
-    try{
-     let result = fetch(`${url}/${cardId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(obj)
-    });
-    return result;
-    } catch(e){
+  put(token, url, cardId, obj) {
+    try {
+      let result = fetch(`${url}/${cardId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(obj),
+      });
+      return result;
+    } catch (e) {
       console.log(e.message);
     }
-    
-  // .then(response => response.json())
-  // .then(response => console.log(response))
+
+    // .then(response => response.json())
+    // .then(response => console.log(response))
+  }
+}
+
+class Filter {
+  filterByStatus(status, cards) {
+    // С расчетом дат нужно поработать
+    switch (status) {
+      case "1":
+        return this.#getOpenedCards(cards);
+      case "2":
+        return this.#getClosedCards(cards);
+      default:
+        return cards;
+    }
+  }
+
+  #getClosedCards(cards) {
+    let filteredArray = [];
+    cards.forEach((card) => {
+      if (card.data < Date.now()) {
+        filteredArray.push(card);
+      }
+    });
+    return filteredArray;
+  }
+
+  #getOpenedCards(cards) {
+    let filteredArray = [];
+    cards.forEach((card) => {
+      if (card.data >= Date.now()) {
+        filteredArray.push(card);
+      }
+    });
+    return filteredArray;
+  }
+
+  filterByUrgency(urgency, cards) {
+    let cardsFeiltered = [];
+    cards.forEach((card) => {
+      if (card.ugency === urgency) {
+        cardsFeiltered.push(card);
+      }
+    });
+    return cardsFeiltered;
+  }
+
+  filterByTitleAndBodyText(textSearch, cards) {
+    if (textSearch === "" || textSearch === undefined) {
+      return cards;
+    }
+    let cardsFiltered = [];
+    cards.forEach((card) => {
+      let { description, goal } = card;
+      description = description === undefined ? "" : description;
+      goal = goal === undefined ? "" : goal;
+
+      if (description.includes(textSearch) || goal.includes(textSearch)) {
+        cardsFiltered.push(card);
+      }
+    });
+    return cardsFiltered;
   }
 }
 
@@ -353,13 +413,14 @@ btnSave.addEventListener("click", async (e) => {
     return;
   }
   let auth = new Authorization(mail.value, pass.value);
-  let newToken = "";
+
   try {
-    newToken = await auth.getToken();
+    TOKEN = await auth.getToken();
   } catch (error) {
     alert(error.message);
   }
-  if (TOKEN !== newToken) {
+
+  if (TOKEN === undefined || TOKEN === "") {
     alert("Авторизация не успешна");
   } else {
     modal.closeModal();
@@ -371,6 +432,10 @@ btnSave.addEventListener("click", async (e) => {
       if (cards.length !== 0 && cards !== undefined) {
         let noVisitText = document.querySelector(".main__text");
         noVisitText.style.display = "none";
+        let cardClass = new Card();
+        cards.forEach((card) => {
+          cardClass.renderCard(card);
+        });
       }
     } catch (error) {
       console.log(error.message);
@@ -544,21 +609,36 @@ createVisitBtn.addEventListener("click", (e) => {
     const newRequest = new Request();
     console.log(newRequest.post(url, cardObj, TOKEN));
 
-    newRequest.post(url, cardObj, TOKEN)      
-    .then(response => response.json())
-    .then(data => carder.renderCard(data))
+    newRequest
+      .post(url, cardObj, TOKEN)
+      .then((response) => response.json())
+      .then((data) => carder.renderCard(data));
   });
 });
 
-let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять. 
+let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять.
 
 //далее идет создание карточки.
 class Card {
   renderCard(promise) {
-    const {lastName, name, surname, doctor, age, diseases, index, data, press, goal, description, ugency, id} = promise;
+    const {
+      lastName,
+      name,
+      surname,
+      doctor,
+      age,
+      diseases,
+      index,
+      data,
+      press,
+      goal,
+      description,
+      ugency,
+      id,
+    } = promise;
     const card = document.createElement("div");
     card.classList = "card card-width";
-    card.id = `card-${counter}`
+    card.id = `card-${counter}`;
     card.innerHTML = `
         <div class="card-header">
         <div class="small-buttons-container">
@@ -571,73 +651,96 @@ class Card {
          <h5 class="card-title">Доктор: ${getDoctor(doctor)}</h5>
         <a href="#" id='show-more-${counter}' class="btn btn-primary">Показать больше</a>
         </div>`;
-  
+
     cardContainer.prepend(card);
 
-    let showMoreBtn = document.getElementById(`show-more-${counter}`); 
-    showMoreBtn.addEventListener("click", ()=> {// клик на кнопку показать больше
-             carder.clickOnShowMore(showMoreBtn, card, doctor, age, diseases, index, press, data, goal, description, ugency);
-    })
+    let showMoreBtn = document.getElementById(`show-more-${counter}`);
+    showMoreBtn.addEventListener("click", () => {
+      // клик на кнопку показать больше
+      carder.clickOnShowMore(
+        showMoreBtn,
+        card,
+        doctor,
+        age,
+        diseases,
+        index,
+        press,
+        data,
+        goal,
+        description,
+        ugency
+      );
+    });
     let delBtn = document.getElementById(`del-${counter}`);
     let editBtn = document.getElementById(`edit-${counter}`);
     let doctorName = document.querySelector(".card-title");
-    carder.deleteCard(delBtn, card, id); //  метод удаления карточки 
-    carder.editCard(editBtn, doctorName, id);  // метод изменения карточки 
+    carder.deleteCard(delBtn, card, id); //  метод удаления карточки
+    carder.editCard(editBtn, doctorName, id); // метод изменения карточки
     return card;
   }
 
-  deleteCard(btn, element, cardId){
+  deleteCard(btn, element, cardId) {
     btn.addEventListener("click", () => {
-     const requestDelete = new Request();
-     requestDelete.delete(TOKEN, url, cardId)
-     .then(response => {
-      if(response.status === 200){
-        element.remove();
-      } else {
-        console.log(new Error("Что-то пошло не так!"));
-      }
-     })
-     });
-
+      const requestDelete = new Request();
+      requestDelete.delete(TOKEN, url, cardId).then((response) => {
+        if (response.status === 200) {
+          element.remove();
+        } else {
+          console.log(new Error("Что-то пошло не так!"));
+        }
+      });
+    });
   }
 
-  
-  editCard(btn, doctor, cardId){
-     
-     btn.addEventListener("click", () => {
-      
+  editCard(btn, doctor, cardId) {
+    btn.addEventListener("click", () => {
       counter1++;
       const modal3 = new Modal(`window-${counter1}`, `edit-btn-${counter1}`);
-      document.body.append(modal3.render("Редактировать карточку", visit.render(cardEditForm(doctor)), "Отменить", "Сохранить"));
+      document.body.append(
+        modal3.render(
+          "Редактировать карточку",
+          visit.render(cardEditForm(doctor)),
+          "Отменить",
+          "Сохранить"
+        )
+      );
       modal3.openModal();
-let modalBody = document.getElementById(`window-${counter1}`);
+      let modalBody = document.getElementById(`window-${counter1}`);
 
-
-modalBody.addEventListener("change", (e)=> {
+      modalBody.addEventListener("change", (e) => {
         console.log(e.target.value, e.currentTarget);
-  
-})
+      });
 
-
-           
-      //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте. 
+      //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте.
       let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
-      saveChanges.addEventListener("click", ()=> {
+      saveChanges.addEventListener("click", () => {
         console.log("отсюда полетит put-запрос на изменение карты на сервере");
         modal3.closeModal();
-      })
-     })
-   }
+      });
+    });
+  }
 
-   // далее идет нажатие на кнопку Показать больше
-   clickOnShowMore(btn, element, doctor, age, diseases, index, press, data, goal, description, ugency){
+  // далее идет нажатие на кнопку Показать больше
+  clickOnShowMore(
+    btn,
+    element,
+    doctor,
+    age,
+    diseases,
+    index,
+    press,
+    data,
+    goal,
+    description,
+    ugency
+  ) {
     let info = document.createElement("div");
-    if(doctor === "dentist"){
+    if (doctor === "dentist") {
       info.innerHTML = `<ul class="list-group list-group-flush">
       ${getClientInfo(data, goal, ugency, description)}
       </ul>`;
-    } else if(doctor === "cardiologist"){
+    } else if (doctor === "cardiologist") {
       info.innerHTML = `<ul class="list-group list-group-flush">
       ${getClientInfo(data, goal, ugency, description)}
       <li class="list-group-item">Возраст: ${age}</li>
@@ -645,53 +748,53 @@ modalBody.addEventListener("change", (e)=> {
       <li class="list-group-item">Заболевания: ${diseases}</li>
       <li class="list-group-item">Давление: ${press}</li>
       </ul>
-      `
+      `;
     } else {
       info.innerHTML = `<ul class="list-group list-group-flush">
       ${getClientInfo(data, goal, ugency, description)}
       <li class="list-group-item">Возраст: ${age}</li>
-      </ul>`
+      </ul>`;
     }
 
     element.append(info);
     btn.style.display = "none";
     return info;
-   }
- }
+  }
+}
 
- //функция для создания доп-инфо в карточке
- function getClientInfo(data, goal, ugency, description){
+//функция для создания доп-инфо в карточке
+function getClientInfo(data, goal, ugency, description) {
   return `<li class="list-group-item">Дата визита: ${data}</li>
     <li class="list-group-item">Цель визита: ${goal}</li>
     <li class="list-group-item">Срочность визита: ${getUrgency(ugency)}</li>
-    <li class="list-group-item">Описание визита: ${description}</li>`
- }
+    <li class="list-group-item">Описание визита: ${description}</li>`;
+}
 
- // функция для корректного отображения доктора в карточке. 
- function getDoctor(doctor){
-  if(doctor === "dentist"){
-     return "Стоматолог";
-  } else if(doctor === "cardiologist"){
+// функция для корректного отображения доктора в карточке.
+function getDoctor(doctor) {
+  if (doctor === "dentist") {
+    return "Стоматолог";
+  } else if (doctor === "cardiologist") {
     return "Кардиолог";
   } else {
-      return "Терапевт";
+    return "Терапевт";
   }
- }
+}
 
 // функция для корректного отображения срочности в карточке.
- function getUrgency(ugency){
-  if(ugency === "1"){
+function getUrgency(ugency) {
+  if (ugency === "1") {
     return "Обычная";
- } else if(ugency === "2"){
-   return "Приоритетная";
- } else {
-     return "Неотложная";
- }
- }
+  } else if (ugency === "2") {
+    return "Приоритетная";
+  } else {
+    return "Неотложная";
+  }
+}
 
- //функция для изменения формы в модалке редактирования карты
- function cardEditForm(doctor){
-  if(doctor.textContent.includes("Стоматолог")){
+//функция для изменения формы в модалке редактирования карты
+function cardEditForm(doctor) {
+  if (doctor.textContent.includes("Стоматолог")) {
     const dentist1 = new VisitDentist(
       "Цель визита",
       "Выберите врача",
@@ -700,8 +803,8 @@ modalBody.addEventListener("change", (e)=> {
       "ФИО клиента",
       "Дата визита"
     );
-  return dentist1.renderDentist(); 
-  } else if(doctor.textContent.includes("Кардиолог")){
+    return dentist1.renderDentist();
+  } else if (doctor.textContent.includes("Кардиолог")) {
     const cardiologist1 = new VisitCardiologist(
       "Цель визита",
       "Выберите врача",
@@ -726,4 +829,101 @@ modalBody.addEventListener("change", (e)=> {
 
 const carder = new Card();
 
+//вешаю функции фильтрации на элементы
 
+// Статус визита
+let statusSelectElement = document.getElementById("statusSelectForm");
+statusSelectElement.addEventListener("change", async (e) => {
+  let filter = new Filter();
+  let request = new Request();
+  let cardsAll;
+  try {
+    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+  } catch (error) {
+    console.log("Ошибка получения данных с сервера " + error.message);
+    return;
+  }
+  // проверяю есть ли данные на сервере. Если нет прерываю выполнение
+  if (cardsAll === undefined || cardsAll.length === 0) {
+    console.log("массив карт пуст");
+    return;
+  }
+  let cardsFiltered = filter.filterByStatus(e.target.value, cardsAll); // фильтрую
+
+  //вывожу отфильтрованый список
+
+  clearCards();
+  let cardClass = new Card();
+  cardsFiltered.forEach((card) => {
+    cardClass.renderCard(card);
+  });
+});
+
+//срочность визита
+let prioritetSelectElement = document.getElementById("urgencySelectForm");
+prioritetSelectElement.addEventListener("change", async (e) => {
+  let filter = new Filter();
+  let request = new Request();
+  let cardsAll;
+  try {
+    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+  } catch (error) {
+    console.log("Ошибка получения данных с сервера " + error.message);
+    return;
+  }
+  // проверяю есть ли данные на сервере. Если нет прерываю выполнение
+  if (cardsAll === undefined || cardsAll.length === 0) {
+    console.log("массив карт пуст");
+    return;
+  }
+  let cardsFiltered = filter.filterByUrgency(e.target.value, cardsAll); // фильтрую
+
+  //очистка всех предыдущих карточек
+  clearCards();
+
+  //вывожу отфильтрованый список
+
+  let cardClass = new Card();
+  cardsFiltered.forEach((card) => {
+    cardClass.renderCard(card);
+  });
+});
+
+//Поиск по заголовку и телу описания визита
+let searchElement = document.getElementById("search-button");
+searchElement.addEventListener("click", async () => {
+  let searchInput = document.getElementById("search-input");
+  let filter = new Filter();
+  let request = new Request();
+  let cardsAll;
+  try {
+    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+  } catch (error) {
+    console.log("Ошибка получения данных с сервера " + error.message);
+    return;
+  }
+  // проверяю есть ли данные на сервере. Если нет прерываю выполнение
+  if (cardsAll === undefined || cardsAll.length === 0) {
+    console.log("массив карт пуст");
+    return;
+  }
+  let cardsFiltered = filter.filterByTitleAndBodyText(
+    searchInput.value,
+    cardsAll
+  ); // фильтрую
+
+  //очистка всех предыдущих карточек
+  clearCards();
+  let cardClass = new Card();
+  cardsFiltered.forEach((card) => {
+    cardClass.renderCard(card);
+  });
+});
+
+// Функция, которая будет очищать поле с карточкапи перед перерисовкой
+function clearCards() {
+  let cards = document.querySelectorAll(".card");
+  cards.forEach((card) => {
+    card.remove();
+  });
+}
