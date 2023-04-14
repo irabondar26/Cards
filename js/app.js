@@ -201,7 +201,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>`;
+      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>`
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
   }
@@ -540,13 +540,12 @@ createVisitBtn.addEventListener("click", (e) => {
 const newRequest = new Request();
 newRequest.post(url, cardObj, TOKEN)
 
-    newRequest.post(url, cardObj, TOKEN)      
+         
     .then(response => response.json())
     .then(data => carder.renderCard(data));
       modal2.closeModal(); 
     })
   })
-
 
 let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять. 
 
