@@ -201,8 +201,7 @@ class VisitDentist extends Visit {
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>
-      `;
+      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>`;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
   }
@@ -459,23 +458,23 @@ createVisitBtn.addEventListener("click", (e) => {
 
   function serchVisitInputs() {
     let newObj = {};
-    const doctor = document.querySelector(".visit-doctor").value;
-    const ugency = document.querySelector(".visit-ugency").value;
-    const data = document.querySelector(".visit-data").value;
-    const goal = document.querySelector(".visit-goal").value;
-    const description = document.querySelector(".visit-description").value;
-    const lastName = document.querySelector(".visit-lastName").value;
-    const name = document.querySelector(".visit-name").value;
-    const surname = document.querySelector(".visit-surname").value;
+    let doctor = document.querySelector(".visit-doctor");
+    let ugency = document.querySelector(".visit-ugency");
+    let data = document.querySelector(".visit-data");
+    let goal = document.querySelector(".visit-goal");
+    let description = document.querySelector(".visit-description");
+    let lastName = document.querySelector(".visit-lastName");
+    let name = document.querySelector(".visit-name");
+    let surname = document.querySelector(".visit-surname");
     newObj = {
-      doctor,
-      ugency,
-      data,
-      goal,
-      description,
-      lastName,
-      name,
-      surname,
+      doctor:doctor.value,
+      ugency:ugency.value,
+      data:data.value,
+      goal:goal.value,
+      description:description.value,
+      lastName:lastName.value,
+      name:name.value,
+      surname:surname.value
     };
     return newObj;
   }
@@ -485,13 +484,11 @@ createVisitBtn.addEventListener("click", (e) => {
   //const btnSaveVisit = document.getElementById(`save-${counter}`);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    modal2.closeModal(); 
-    console.log("здесь делаем пост запрос и выводим карточку на стену");
     let cardObj;
     if (formSelect.value === "dentist") {
       let { doctor, ugency, data, goal, description, lastName, name, surname } =
         serchVisitInputs();
-      const dataLastVisit = document.querySelector(".last-visit").value;
+      const dataLastVisit = document.querySelector(".visit-dataLastVisit").value;
       cardObj = {
         doctor: doctor,
         ugency: ugency,
@@ -540,14 +537,16 @@ createVisitBtn.addEventListener("click", (e) => {
         age: age,
       };
     }
-    const newRequest = new Request();
-    console.log(newRequest.post(url, cardObj, TOKEN));
+const newRequest = new Request();
+newRequest.post(url, cardObj, TOKEN)
 
     newRequest.post(url, cardObj, TOKEN)      
     .then(response => response.json())
     .then(data => carder.renderCard(data));
-  });
-});
+      modal2.closeModal(); 
+    })
+  })
+
 
 let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять. 
 
