@@ -711,6 +711,7 @@ class Card {
       let doctorSelect = document.querySelectorAll(".visit-doctor");
       let arr = Array.from(doctorSelect);
       let lastSelect = arr.at(-1);
+      console.log(lastSelect.value);
 
       const dentist2 = new VisitDentist(
         "Цель визита",
@@ -722,6 +723,7 @@ class Card {
       );
 
       modal3.changeModal(dentist2.renderDentist());
+      
 
       // отслеживаю изменения в окне "Редактировать карточку" при смене врача.
       lastSelect.addEventListener("change", (e) => {
@@ -745,6 +747,8 @@ class Card {
         }
         return lastSelect;
       });
+
+      lastSelect = lastSelect.value;
 
       function getValueInputs() {
         let obj = {};
