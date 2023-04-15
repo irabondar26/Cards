@@ -480,7 +480,7 @@ btnSave.addEventListener("click", async (e) => {
     createVisitBtn.style.display = "block";
 
     //сохранить авторизационные данные в локальное хранилище
-    localStorage.setItem('token', TOKEN);
+   localStorage.setItem('token', TOKEN);
 
     //показываю кнопку выход
     let exitBtn = document.getElementById('exit')
@@ -513,7 +513,7 @@ btnSave.addEventListener("click", async (e) => {
       console.log(error.message);
     }
   }
-});
+ });
 
 function contentCheckAndDelete(el) {
   if (el) {
@@ -681,7 +681,6 @@ createVisitBtn.addEventListener("click", (e) => {
       };
     }
     const newRequest = new Request();
-    console.log(newRequest.post(url, cardObj, TOKEN));
 
     newRequest
       .post(url, cardObj, TOKEN)
@@ -989,7 +988,7 @@ class Card {
               listGroups.forEach((el) => {
                 el.remove();
               });
-              //listGroup.remove();
+              
               let carder2 = new Card();
               carder2.clickOnShowMore(
                 btn,
@@ -1138,7 +1137,7 @@ const carder = new Card();
 
 //вешаю функции фильтрации на элементы
 
-// Статус визита
+//Статус визита
 let statusSelectElement = document.getElementById("statusSelectForm");
 statusSelectElement.addEventListener("change", async (e) => {
   let filter = new Filter();
@@ -1150,7 +1149,7 @@ statusSelectElement.addEventListener("change", async (e) => {
     console.log("Ошибка получения данных с сервера " + error.message);
     return;
   }
-  // проверяю есть ли данные на сервере. Если нет прерываю выполнение
+//  проверяю есть ли данные на сервере. Если нет прерываю выполнение
   if (cardsAll === undefined || cardsAll.length === 0) {
     console.log("массив карт пуст");
     return;
