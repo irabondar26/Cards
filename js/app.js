@@ -328,6 +328,7 @@ class Request {
 class Filter {
   filterByStatus(status, cards) {
     // С расчетом дат нужно поработать
+    console.log(cards);
     switch (status) {
       case "1":
         return this.#getOpenedCards(cards);
@@ -341,7 +342,7 @@ class Filter {
   #getClosedCards(cards) {
     let filteredArray = [];
     cards.forEach((card) => {
-      if (card.data < Date.now()) {
+      if ((Date.now() - Date.parse(card.data)) > 0) {
         filteredArray.push(card);
       }
     });
@@ -351,7 +352,7 @@ class Filter {
   #getOpenedCards(cards) {
     let filteredArray = [];
     cards.forEach((card) => {
-      if (card.data >= Date.now()) {
+      if ((Date.now() - Date.parse(card.data)) <= 0) {
         filteredArray.push(card);
       }
     });
@@ -383,6 +384,7 @@ class Filter {
         cardsFiltered.push(card);
       }
     });
+    console.log('cards :>> ', cards);
     return cardsFiltered;
   }
 }
@@ -401,6 +403,7 @@ const createVisitBtn = document.getElementById("create-visit-btn");
 
 // контейнер для будущих карточек
 const cardContainer = document.querySelector(".cards-wrapper");
+
 
 //при клике на єту кнопку проверяю пароль и вывожу на стену карточки.
 btnSave.addEventListener("click", async (e) => {
@@ -424,17 +427,30 @@ btnSave.addEventListener("click", async (e) => {
     modal.closeModal();
     entry.style.display = "none";
     createVisitBtn.style.display = "block";
+
+    //сохранить авторизационные данные в локальное хранилище
+
+    //показываю кнопку выход
+    let exitBtn = document.getElementById('exit')
+    exitBtn.style.display = 'block'
+    exitBtn.addEventListener('click', () => {
+      //cleaning lockalstorage
+    })
+
     try {
       const request = new Request();
       let cards = await request.getAll(url, TOKEN);
       if (cards.length !== 0 && cards !== undefined) {
         let noVisitText = document.querySelector(".main__text");
         noVisitText.style.display = "none";
+
         //вывожу все карточки с сервреа после успешной аворизации
         let cardClass = new Card();
         cards.forEach((card) => {
           cardClass.renderCard(card);
         });
+
+        //
       }
     } catch (error) {
       console.log(error.message);
@@ -724,7 +740,7 @@ class Card {
       );
 
       // modal3.changeModal(dentist2.renderDentist());
-      
+
 
       // отслеживаю изменения в окне "Редактировать карточку" при смене врача.
       lastSelect.addEventListener("change", (e) => {
