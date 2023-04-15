@@ -782,7 +782,7 @@ class Card {
       //let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
       formEdit.addEventListener("submit", (e) => {
-        //e.preventDefault();
+        e.preventDefault();
         console.log(getValueInputs());
         modal3.closeModal();
         let fullobj;
