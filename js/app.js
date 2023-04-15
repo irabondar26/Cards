@@ -657,6 +657,7 @@ class Card {
 
     let showMoreBtn = document.getElementById(`show-more-${counter}`);
     showMoreBtn.addEventListener("click", () => {
+      //e.preventDefault();
       // клик на кнопку показать больше
       carder.clickOnShowMore(
         showMoreBtn,
@@ -722,7 +723,7 @@ class Card {
         "Дата визита"
       );
 
-      modal3.changeModal(dentist2.renderDentist());
+      // modal3.changeModal(dentist2.renderDentist());
       
 
       // отслеживаю изменения в окне "Редактировать карточку" при смене врача.
@@ -749,6 +750,9 @@ class Card {
       });
 
       lastSelect = lastSelect.value;
+      let secondBody = document.querySelectorAll(".second-modal-body");
+      secondBody.forEach((el) => el.remove());
+      modal3.changeModal(dentist2.renderDentist());
 
       function getValueInputs() {
         let obj = {};
@@ -778,7 +782,7 @@ class Card {
       //let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
       formEdit.addEventListener("submit", (e) => {
-        e.preventDefault();
+        //e.preventDefault();
         console.log(getValueInputs());
         modal3.closeModal();
         let fullobj;
