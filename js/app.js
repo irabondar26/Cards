@@ -3,6 +3,52 @@
 const url = "https://ajax.test-danit.com/api/v2/cards";
 let TOKEN; // "787ace58-d17b-420f-b75b-29ee789e9496";
 
+function checkLockalStorage() {
+  TOKEN = localStorage.getItem('token')
+  if (TOKEN !== undefined && TOKEN !== "" && TOKEN !== null) {
+    document.getElementById('entry').style.display = 'none'
+    //показываю кнопку выход
+    let exitBtn = document.getElementById('exit')
+    exitBtn.style.display = 'block'
+    document.getElementById("create-visit-btn").style.display = 'block';
+    exitBtn.addEventListener('click', () => {
+      localStorage.removeItem('token')
+      exitBtn.style.display = 'none'
+      TOKEN = "";
+      entry.style.display = 'block'
+      clearCards();
+      document.getElementById("create-visit-btn").style.display = "none";
+      document.querySelector(".main__text").style.display = 'block'
+    })
+    printAllCards();
+  }
+}
+
+
+async function printAllCards() {
+  const request = new Request();
+  try {
+
+    let cards = await request.getAll(url, TOKEN);
+    if (cards.length !== 0 && cards !== undefined) {
+      let noVisitText = document.querySelector(".main__text");
+      noVisitText.style.display = "none";
+
+      //вывожу все карточки с сервреа после успешной аворизации
+      let cardClass = new Card();
+      cards.forEach((card) => {
+        cardClass.renderCard(card);
+      });
+
+      //
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
 const entry = document.getElementById("entry"); // это кнопка вход на главной странице. при нажатии на нее открываем модалку.
 entry.addEventListener("click", (e) => {
   e.preventDefault();
@@ -389,6 +435,9 @@ class Filter {
   }
 }
 
+
+
+
 const modal = new Modal("window", "save");
 const form = new Forms();
 document.body.append(
@@ -404,6 +453,8 @@ const createVisitBtn = document.getElementById("create-visit-btn");
 // контейнер для будущих карточек
 const cardContainer = document.querySelector(".cards-wrapper");
 
+//проверяю локальное хранилище и авторизируюсь оттуда если там есть токен
+checkLockalStorage();
 
 //при клике на єту кнопку проверяю пароль и вывожу на стену карточки.
 btnSave.addEventListener("click", async (e) => {
@@ -429,12 +480,19 @@ btnSave.addEventListener("click", async (e) => {
     createVisitBtn.style.display = "block";
 
     //сохранить авторизационные данные в локальное хранилище
+    localStorage.setItem('token', TOKEN);
 
     //показываю кнопку выход
     let exitBtn = document.getElementById('exit')
     exitBtn.style.display = 'block'
     exitBtn.addEventListener('click', () => {
-      //cleaning lockalstorage
+      localStorage.removeItem('token')
+      exitBtn.style.display = 'none'
+      TOKEN = "";
+      entry.style.display = 'block'
+      clearCards();
+      createVisitBtn.style.display = 'none'
+      document.querySelector(".main__text").display = 'block'
     })
 
     try {
@@ -450,7 +508,6 @@ btnSave.addEventListener("click", async (e) => {
           cardClass.renderCard(card);
         });
 
-        //
       }
     } catch (error) {
       console.log(error.message);
@@ -1176,3 +1233,4 @@ function clearCards() {
     card.remove();
   });
 }
+
