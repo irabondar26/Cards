@@ -7,7 +7,6 @@ function checkLockalStorage() {
   TOKEN = localStorage.getItem('token')
   if (TOKEN !== undefined && TOKEN !== "" && TOKEN !== null) {
     document.getElementById('entry').style.display = 'none'
-    //показываю кнопку выход
     let exitBtn = document.getElementById('exit')
     exitBtn.style.display = 'block'
     document.getElementById("create-visit-btn").style.display = 'block';
@@ -34,7 +33,6 @@ async function printAllCards() {
       let noVisitText = document.querySelector(".main__text");
       noVisitText.style.display = "none";
 
-      //вывожу все карточки с сервреа после успешной аворизации
       let cardClass = new Card();
       cards.forEach((card) => {
         cardClass.renderCard(card);
@@ -135,7 +133,6 @@ class Modal {
   }
 }
 
-//данный класс создает форму авторизации
 class Forms {
   formLogin() {
     const form = document.createElement("div");
@@ -174,22 +171,15 @@ class Authorization {
   }
 }
 
-//данный класс описывает общую форму для визитов
 class Visit {
-  constructor(goal, doctor, description, urgency, fullName, data, body = "") {
-    this.goal = goal;
-    this.doctor = doctor;
-    this.description = description;
-    this.urgency = urgency;
-    this.fullName = fullName;
-    this.data = data;
+  constructor(body = "") {
     this.body = body;
   }
   render(body = "") {
     let doctor = document.createElement("div");
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
-      <label class="input-group-text" for="inputGroupSelect01">${this.doctor}</label>
+      <label class="input-group-text" for="inputGroupSelect01">Выберите врача</label>
           <select class="form-select visit-doctor" id="inputGroupSelect01" required>
               <option class="form-select__otion form-select__otion--dentist" value="dentist">Стоматолог</option>
               <option class="form-select__otion form-select__otion--cardiolog" value="cardiologist">Кардиолог</option>
@@ -200,7 +190,7 @@ class Visit {
     let urgency = document.createElement("div");
     urgency.classList = "input-group mb-3";
     urgency.innerHTML = `
-      <label class="input-group-text" for="inputGroupSelect01">${this.urgency}</label>
+      <label class="input-group-text" for="inputGroupSelect01">Выберите срочность</label>
           <select class="form-select visit-ugency" id="inputGroupSelect01" required>
               <option value="1">Обычная</option>
               <option value="2">Приоритетная</option>
@@ -210,23 +200,23 @@ class Visit {
 
     let dataOfVisit = document.createElement("div");
     dataOfVisit.classList = "input-group mb-3";
-    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.data}</span>
+    dataOfVisit.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Дата визита</span>
       <input type="date" class="form-control visit-data" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let goal = document.createElement("div");
     goal.classList = "input-group mb-3";
-    goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.goal}</span>
+    goal.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Цель визита</span>
       <input type="text" class="form-control visit-goal" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let description = document.createElement("div");
     description.classList = "input-group mb-3";
-    description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">${this.description}</span>
+    description.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Краткое описание</span>
       <input type="text" class="form-control visit-description" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>`;
 
     let name = document.createElement("div");
     name.classList = "input-group mb-3";
     name.innerHTML = `
-      <span class="input-group-text">${this.fullName}</span>
+      <span class="input-group-text">ФИО клиента</span>
       <input type="text" aria-label="Last name" class="form-control visit-lastName" placeholder="Фамилия" required>
       <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя" required>
       <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество" required>
@@ -239,15 +229,12 @@ class Visit {
 }
 
 class VisitDentist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName, data) {
-    super(goal, doctor, description, urgency, fullName, data);
-  }
   renderDentist() {
     let dataLastVisit = document.createElement("div");
     dataLastVisit.classList = "input-group mb-3";
     dataLastVisit.innerHTML = `
       <span class="input-group-text">Дата последнего визита</span>
-      <input type="text" aria-label="data" class="form-control last-visit" placeholder="Дата" required>
+      <input type="date" aria-label="data" class="form-control last-visit" placeholder="Дата" required>
       `;
     dataLastVisit.classList.add("second-modal-body");
     return dataLastVisit;
@@ -255,9 +242,6 @@ class VisitDentist extends Visit {
 }
 
 class VisitCardiologist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName, data) {
-    super(goal, doctor, description, urgency, fullName, data);
-  }
   renderCardiologist() {
     let result = document.createElement("div");
 
@@ -295,9 +279,6 @@ class VisitCardiologist extends Visit {
 }
 
 class VisitTherapist extends Visit {
-  constructor(goal, doctor, description, urgency, fullName, data) {
-    super(goal, doctor, description, urgency, fullName, data);
-  }
   renderTherapist() {
     let age = document.createElement("div");
     age.classList = "input-group mb-3";
@@ -310,10 +291,8 @@ class VisitTherapist extends Visit {
   }
 }
 
-//здесь будут создаваться запросы
 class Request {
   async getAll(url, token) {
-    // это запрос на получение всех карточек с сервера
     let request = await fetch(url, {
       method: "GET",
       headers: {
@@ -373,7 +352,6 @@ class Request {
 
 class Filter {
   filterByStatus(status, cards) {
-    // С расчетом дат нужно поработать
     console.log(cards);
     switch (status) {
       case "1":
@@ -421,7 +399,7 @@ class Filter {
     }
     let cardsFiltered = [];
     cards.forEach((card) => {
-      //деструктурирую карту и если не было заполнено одно из полей, ининциализирую его пустой сторойо, чтоб не ловить исключение.
+      //деструктурирую карту и если не было заполнено одно из полей, ининциализирую его пустой сторокой, чтоб не ловить исключение.
       let { description, goal } = card;
       description = description === undefined ? "" : description;
       goal = goal === undefined ? "" : goal;
@@ -442,21 +420,19 @@ const modal = new Modal("window", "save");
 const form = new Forms();
 document.body.append(
   modal.render("Авторизация", form.formLogin(), "Закрыть", "Войти")
-); // вставила окошко авторизации
+);
 
-//некоторые глобальные переменные, которые нужны для проверки пароля и логина
+
 const btnSave = document.getElementById("save");
 const mail = document.getElementById("email");
 const pass = document.getElementById("pass");
 const createVisitBtn = document.getElementById("create-visit-btn");
 
-// контейнер для будущих карточек
 const cardContainer = document.querySelector(".cards-wrapper");
 
-//проверяю локальное хранилище и авторизируюсь оттуда если там есть токен
 checkLockalStorage();
 
-//при клике на єту кнопку проверяю пароль и вывожу на стену карточки.
+//при клике на эту кнопку проверяю пароль и вывожу на стену карточки.
 btnSave.addEventListener("click", async (e) => {
   e.preventDefault();
   if (mail.value === "" || pass.value === "") {
@@ -479,10 +455,8 @@ btnSave.addEventListener("click", async (e) => {
     entry.style.display = "none";
     createVisitBtn.style.display = "block";
 
-    //сохранить авторизационные данные в локальное хранилище
    localStorage.setItem('token', TOKEN);
 
-    //показываю кнопку выход
     let exitBtn = document.getElementById('exit')
     exitBtn.style.display = 'block'
     exitBtn.addEventListener('click', () => {
@@ -502,7 +476,6 @@ btnSave.addEventListener("click", async (e) => {
         let noVisitText = document.querySelector(".main__text");
         noVisitText.style.display = "none";
 
-        //вывожу все карточки с сервреа после успешной аворизации
         let cardClass = new Card();
         cards.forEach((card) => {
           cardClass.renderCard(card);
@@ -521,14 +494,7 @@ function contentCheckAndDelete(el) {
   }
 }
 
-const visit = new Visit(
-  "Цель визита",
-  "Выберите врача",
-  "Краткое описание",
-  "Выберите срочность",
-  "ФИО клиента",
-  "Дата визита"
-);
+const visit = new Visit();
 let counter = 0;
 //при клике на эту кнопку выводится модальное окно для создания визита.
 createVisitBtn.addEventListener("click", (e) => {
@@ -548,14 +514,7 @@ createVisitBtn.addEventListener("click", (e) => {
 
   const formSelect = document.querySelector("#inputGroupSelect01");
 
-  const dentist = new VisitDentist(
-    "Цель визита",
-    "Выберите врача",
-    "Краткое описание",
-    "Выберите срочность",
-    "ФИО клиента",
-    "Дата визита"
-  );
+  const dentist = new VisitDentist();
 
   modal2.changeModal(dentist.renderDentist());
 
@@ -563,36 +522,15 @@ createVisitBtn.addEventListener("click", (e) => {
     let element = document.querySelector(".second-modal-body");
     if (formSelect.value === "dentist") {
       contentCheckAndDelete(element);
-      const dentist1 = new VisitDentist(
-        "Цель визита",
-        "Выберите врача",
-        "Краткое описание",
-        "Выберите срочность",
-        "ФИОклиента",
-        "Дата визита"
-      );
+      const dentist1 = new VisitDentist();
       modal2.changeModal(dentist1.renderDentist());
     } else if (formSelect.value === "cardiologist") {
       contentCheckAndDelete(element);
-      const cardiologist = new VisitCardiologist(
-        "Цель визита",
-        "Выберите врача",
-        "Краткое описание",
-        "Выберите срочность",
-        "ФИО клиента",
-        "Дата визита"
-      );
+      const cardiologist = new VisitCardiologist();
       modal2.changeModal(cardiologist.renderCardiologist());
     } else {
       contentCheckAndDelete(element);
-      const therapist = new VisitTherapist(
-        "Цель визита",
-        "Выберите врача",
-        "Краткое описание",
-        "Выберите срочность",
-        "ФИО клиента",
-        "Дата визита"
-      );
+      const therapist = new VisitTherapist();
       modal2.changeModal(therapist.renderTherapist());
     }
   });
@@ -620,9 +558,8 @@ createVisitBtn.addEventListener("click", (e) => {
     return newObj;
   }
 
-  const form = document.getElementById("window-visit"); // при submite этой формы будем делать пост-запрос на создание карточки.
+  const form = document.getElementById("window-visit");
 
-  //const btnSaveVisit = document.getElementById(`save-${counter}`);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     modal2.closeModal();
@@ -689,9 +626,8 @@ createVisitBtn.addEventListener("click", (e) => {
   });
 });
 
-let counter1 = 0; // нужен для id-кнопки "Сохранить" при редактировании карточки, чтоб можно было не один раз сохранять.
+let counter1 = 0;
 
-//далее идет создание карточки.
 class Card {
   renderCard(promise) {
     const {
@@ -729,8 +665,6 @@ class Card {
 
     let showMoreBtn = document.getElementById(`show-more-${counter}`);
     showMoreBtn.addEventListener("click", () => {
-      //e.preventDefault();
-      // клик на кнопку показать больше
       carder.clickOnShowMore(
         showMoreBtn,
         card,
@@ -749,8 +683,8 @@ class Card {
     let editBtn = document.getElementById(`edit-${counter}`);
     let doctorName = document.querySelector(".card-title");
     let nameClient = document.getElementById(`name-${counter}`);
-    carder.deleteCard(delBtn, card, id); //  метод удаления карточки
-    carder.editCard(editBtn, doctorName, id, card, nameClient, showMoreBtn); // метод изменения карточки
+    carder.deleteCard(delBtn, card, id); 
+    carder.editCard(editBtn, doctorName, id, card, nameClient, showMoreBtn);
     return card;
   }
 
@@ -786,19 +720,8 @@ class Card {
       let lastSelect = arr.at(-1);
       console.log(lastSelect.value);
 
-      const dentist2 = new VisitDentist(
-        "Цель визита",
-        "Выберите врача",
-        "Краткое описание",
-        "Выберите срочность",
-        "ФИО клиента",
-        "Дата визита"
-      );
+      const dentist2 = new VisitDentist();
 
-      // modal3.changeModal(dentist2.renderDentist());
-
-
-      // отслеживаю изменения в окне "Редактировать карточку" при смене врача.
       lastSelect.addEventListener("change", (e) => {
         let secondBody = document.querySelectorAll(".second-modal-body");
 
@@ -851,7 +774,6 @@ class Card {
 
       //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте.
       let formEdit = document.getElementById("window-edit");
-      //let saveChanges = document.getElementById(`edit-btn-${counter1}`);
 
       formEdit.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -962,7 +884,6 @@ class Card {
             let listGroup = document.querySelector(".list-group");
             if (listGroup === null) {
               showMoreBtn.addEventListener("click", () => {
-                // клик на кнопку показать больше
                 let listGroups = document.querySelectorAll(".list-group");
                 listGroups.forEach((el) => {
                   el.remove();
@@ -1015,7 +936,6 @@ class Card {
     });
   }
 
-  // далее идет нажатие на кнопку Показать больше
   clickOnShowMore(
     btn,
     element,
@@ -1089,34 +1009,13 @@ function getUrgency(ugency) {
 //функция для изменения формы в модалке редактирования карты
 function cardEditForm(doctor) {
   if (doctor.textContent.includes("Стоматолог")) {
-    const dentist1 = new VisitDentist(
-      "Цель визита",
-      "Выберите врача",
-      "Краткое описание",
-      "Выберите срочность",
-      "ФИО клиента",
-      "Дата визита"
-    );
+    const dentist1 = new VisitDentist();
     return dentist1.renderDentist();
   } else if (doctor.textContent.includes("Кардиолог")) {
-    const cardiologist1 = new VisitCardiologist(
-      "Цель визита",
-      "Выберите врача",
-      "Краткое описание",
-      "Выберите срочность",
-      "ФИО клиента",
-      "Дата визита"
-    );
+    const cardiologist1 = new VisitCardiologist();
     return cardiologist1.renderCardiologist();
   } else {
-    const therapist1 = new VisitTherapist(
-      "Цель визита",
-      "Выберите врача",
-      "Краткое описание",
-      "Выберите срочность",
-      "ФИО клиента",
-      "Дата визита"
-    );
+    const therapist1 = new VisitTherapist();
     return therapist1.renderTherapist();
   }
 }
@@ -1135,7 +1034,6 @@ function getLastValue(classes) {
 
 const carder = new Card();
 
-//вешаю функции фильтрации на элементы
 
 //Статус визита
 let statusSelectElement = document.getElementById("statusSelectForm");
@@ -1144,7 +1042,7 @@ statusSelectElement.addEventListener("change", async (e) => {
   let request = new Request();
   let cardsAll;
   try {
-    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+    cardsAll = await request.getAll(url, TOKEN);
   } catch (error) {
     console.log("Ошибка получения данных с сервера " + error.message);
     return;
@@ -1154,10 +1052,8 @@ statusSelectElement.addEventListener("change", async (e) => {
     console.log("массив карт пуст");
     return;
   }
-  let cardsFiltered = filter.filterByStatus(e.target.value, cardsAll); // фильтрую
+  let cardsFiltered = filter.filterByStatus(e.target.value, cardsAll);
 
-  //вывожу отфильтрованый список
-  //Нужно очищать поле  с картачками
   clearCards();
   let cardClass = new Card();
   cardsFiltered.forEach((card) => {
@@ -1172,7 +1068,7 @@ prioritetSelectElement.addEventListener("change", async (e) => {
   let request = new Request();
   let cardsAll;
   try {
-    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+    cardsAll = await request.getAll(url, TOKEN);
   } catch (error) {
     console.log("Ошибка получения данных с сервера " + error.message);
     return;
@@ -1182,10 +1078,9 @@ prioritetSelectElement.addEventListener("change", async (e) => {
     console.log("массив карт пуст");
     return;
   }
-  let cardsFiltered = filter.filterByUrgency(e.target.value, cardsAll); // фильтрую
+  let cardsFiltered = filter.filterByUrgency(e.target.value, cardsAll);
 
-  //вывожу отфильтрованый список
-  //Нужно очищать поле  с картачками
+
   clearCards();
   let cardClass = new Card();
   cardsFiltered.forEach((card) => {
@@ -1201,7 +1096,7 @@ searchElement.addEventListener("click", async () => {
   let request = new Request();
   let cardsAll;
   try {
-    cardsAll = await request.getAll(url, TOKEN); // получаю все карты
+    cardsAll = await request.getAll(url, TOKEN);
   } catch (error) {
     console.log("Ошибка получения данных с сервера " + error.message);
     return;
@@ -1214,10 +1109,7 @@ searchElement.addEventListener("click", async () => {
   let cardsFiltered = filter.filterByTitleAndBodyText(
     searchInput.value,
     cardsAll
-  ); // фильтрую
-
-  //вывожу отфильтрованый список
-  //Нужно очищать поле  с картачками
+  );
   clearCards();
   let cardClass = new Card();
   cardsFiltered.forEach((card) => {
