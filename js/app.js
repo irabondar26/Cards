@@ -37,8 +37,6 @@ async function printAllCards() {
       cards.forEach((card) => {
         cardClass.renderCard(card);
       });
-
-      //
     }
   } catch (error) {
     console.log(error.message);
@@ -167,7 +165,7 @@ class Authorization {
       body: JSON.stringify({ email: this.login, password: this.password }),
     });
     let data = await response.text();
-    return data;
+    return data !== 'Incorrect username or password'? data : '';  // Проверка на попытку авторизации с не корректными данными
   }
 }
 
@@ -352,7 +350,7 @@ class Request {
 
 class Filter {
   filterByStatus(status, cards) {
-    console.log(cards);
+   
     switch (status) {
       case "1":
         return this.#getOpenedCards(cards);
@@ -408,9 +406,25 @@ class Filter {
         cardsFiltered.push(card);
       }
     });
-    console.log('cards :>> ', cards);
+    
     return cardsFiltered;
   }
+
+  filterByNameLastname(textSearch, cards){
+    let cardsFiltered = [];
+    cards.forEach((card) => {
+      //деструктурирую карту и если не было заполнено одно из полей, ининциализирую его пустой сторокой, чтоб не ловить исключение.
+      let { name, lastName } = card;
+      name = name === undefined ? "" : name.toLowerCase();
+      lastName = lastName === undefined ? "" : lastName.toLowerCase();
+      textSearch = textSearch.toLowerCase();
+      if (lastName.includes(textSearch) || name.includes(textSearch)) {
+        cardsFiltered.push(card);
+      }
+    });
+    return cardsFiltered;
+  }
+
 }
 
 
@@ -623,6 +637,8 @@ createVisitBtn.addEventListener("click", (e) => {
       .post(url, cardObj, TOKEN)
       .then((response) => response.json())
       .then((data) => carder.renderCard(data));
+
+    
   });
 });
 
@@ -685,6 +701,7 @@ class Card {
     let nameClient = document.getElementById(`name-${counter}`);
     carder.deleteCard(delBtn, card, id); 
     carder.editCard(editBtn, doctorName, id, card, nameClient, showMoreBtn);
+    document.getElementById('no-items').style.display = 'none' //TODO прячу надпись no items...
     return card;
   }
 
@@ -694,6 +711,7 @@ class Card {
       requestDelete.delete(TOKEN, url, cardId).then((response) => {
         if (response.status === 200) {
           element.remove();
+          noItemsShowHide(); // TODO если удалить последнюю карточку появится надпись no items...
         } else {
           console.log(new Error("Что-то пошло не так!"));
         }
@@ -1038,6 +1056,11 @@ const carder = new Card();
 //Статус визита
 let statusSelectElement = document.getElementById("statusSelectForm");
 statusSelectElement.addEventListener("change", async (e) => {
+    //нахожу все элементы фильтров и сбрасываю их в исходное состояние
+    const search = document.getElementById('search-input');
+    search.value = "";
+    const urgencyFilter = document.getElementById('urgencySelectForm');
+    urgencyFilter.value = 'Выберите срочность';
   let filter = new Filter();
   let request = new Request();
   let cardsAll;
@@ -1064,6 +1087,12 @@ statusSelectElement.addEventListener("change", async (e) => {
 //срочность визита
 let prioritetSelectElement = document.getElementById("urgencySelectForm");
 prioritetSelectElement.addEventListener("change", async (e) => {
+    //нахожу все элементы фильтров и сбрасываю их в исходное состояние
+    const search = document.getElementById('search-input');
+    search.value = "";
+    const statusFilter = document.getElementById('statusSelectForm');
+    statusFilter.value = 'Выберите статус';
+    
   let filter = new Filter();
   let request = new Request();
   let cardsAll;
@@ -1092,6 +1121,11 @@ prioritetSelectElement.addEventListener("change", async (e) => {
 let searchElement = document.getElementById("search-button");
 searchElement.addEventListener("click", async () => {
   let searchInput = document.getElementById("search-input");
+   // нахожу все элементы фильтров и сбрасываю их в исходное состояние
+    const urgencyFilter = document.getElementById('urgencySelectForm');
+    urgencyFilter.value = 'Выберите срочность';
+    const statusFilter = document.getElementById('statusSelectForm');
+    statusFilter.value = 'Выберите статус';
   let filter = new Filter();
   let request = new Request();
   let cardsAll;
@@ -1106,7 +1140,7 @@ searchElement.addEventListener("click", async () => {
     console.log("массив карт пуст");
     return;
   }
-  let cardsFiltered = filter.filterByTitleAndBodyText(
+  let cardsFiltered = filter.filterByNameLastname(
     searchInput.value,
     cardsAll
   );
@@ -1125,3 +1159,47 @@ function clearCards() {
   });
 }
 
+//кнопка сброса вильтров
+const resetFiltersButton = document.getElementById('reset-filters-button');
+resetFiltersButton.addEventListener('click',async ()=>{
+  //нахожу все элементы фильтров и сбрасываю их в исходное состояние
+  const search = document.getElementById('search-input');
+  search.value = "";
+  const urgencyFilter = document.getElementById('urgencySelectForm');
+  urgencyFilter.value = 'Выберите срочность';
+  const statusFilter = document.getElementById('statusSelectForm');
+  statusFilter.value = 'Выберите статус';
+  //очищаю поле с карточками
+  clearCards();
+  //запрашиваю все карты
+  let request = new Request();
+  let cardsAll;
+  try {
+    cardsAll = await request.getAll(url, TOKEN);
+  } catch (error) {
+    console.log("Ошибка получения данных с сервера " + error.message);
+    return;
+  }
+  // проверяю есть ли данные на сервере. Если нет прерываю выполнение
+  if (cardsAll === undefined || cardsAll.length === 0) {
+    console.log("массив карт пуст");
+    document.querySelector(".main__text").style.display = 'block';
+    return;
+  }
+  let cardClass = new Card();
+  cardsAll.forEach((card) => {
+    cardClass.renderCard(card);
+  });
+})
+
+//функция проверяет есть ли карточки и выводит или прячет надпись No items have been added
+function noItemsShowHide(){
+  let cards = document.getElementsByClassName('card')
+  let text = document.getElementById('no-items');
+  if (cards.length > 0){
+    text.style.display = 'none'
+  }
+  else{
+    text.style.display = 'block'
+  }
+}
