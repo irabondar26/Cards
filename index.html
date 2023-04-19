@@ -34,8 +34,8 @@
 
         <div class="container-fluid filter">
 
-            <div class="input-group">
-                <input id="search-input" type="search" class="form-control rounded" placeholder="Search"
+            <div class="input-group ">
+                <input id="search-input" type="search" class="form-control rounded" placeholder="Search by Name or Surname"
                     aria-label="Search" aria-describedby="search-addon" />
                 <button id="search-button" type="button" class="btn btn-outline-primary">search</button>
             </div>
@@ -53,13 +53,15 @@
                     <option selected disabled>Выберите статус</option>
                     <option value="1">Ожидание</option>
                     <option value="2">Завершен</option>
-
                 </select>
+            </div>
+            <div class="col-sm-1">
+                <button id="reset-filters-button" type="button" class="btn btn-outline-primary">Сбросить</button>
             </div>
 
         </div>
         <div class="cards-wrapper">
-            <p class="align-middle main__text start__text">No items have been added</p>
+            <p id="no-items" class="align-middle main__text start__text">No items have been added</p>
         </div>
 
 
