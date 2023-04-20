@@ -319,18 +319,14 @@ class Request {
     }
   }
 
-  delete(token, url, cardId) {
-    try {
-      let result = fetch(`${url}/${cardId}`, {
+  async delete(token, url, cardId) {
+      let result = await fetch(`${url}/${cardId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       return result;
-    } catch (e) {
-      console.log(e.message);
-    }
   }
 
   put(token, url, cardId, obj) {
@@ -729,8 +725,9 @@ class Card {
 
   deleteCard(btn, element, cardId) {
     btn.addEventListener("click", () => {
-      const requestDelete = new Request();
-      requestDelete.delete(TOKEN, url, cardId).then((response) => {
+      try{
+        const requestDelete = new Request();
+        requestDelete.delete(TOKEN, url, cardId).then((response) => {
         if (response.status === 200) {
           element.remove();
           noItemsShowHide(); // TODO если удалить последнюю карточку появится надпись no items...
@@ -738,6 +735,9 @@ class Card {
           console.log(new Error("Что-то пошло не так!"));
         }
       });
+      } catch (e){
+           console.error(e.message)
+      }
     });
   }
 
