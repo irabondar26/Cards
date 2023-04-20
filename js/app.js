@@ -104,6 +104,7 @@ class Modal {
  div6.append(btnClose, btnSave);
  btn.addEventListener("click", this.closeModal.bind(this));
 
+
     this.div1.addEventListener("click", (e) => {
       if (e.target === this.div1) {
         this.closeModal();
@@ -639,22 +640,7 @@ let counter1 = 0;
 
 class Card {
   renderCard(promise) {
-    const {
-      lastName,
-      name,
-      surname,
-      doctor,
-      age,
-      diseases,
-      index,
-      data,
-      press,
-      goal,
-      description,
-      ugency,
-      id,
-      dataLastVisit
-    } = promise;
+    const { lastName,name,surname,doctor,age,diseases,index,data,press,goal,description,ugency,id,dataLastVisit } = promise;
     const card = document.createElement("div");
     card.classList = "card card-width";
     card.id = `card-${counter}`;
@@ -675,45 +661,14 @@ class Card {
 
     let showMoreBtn = document.getElementById(`show-more-${counter}`);
     showMoreBtn.addEventListener("click", () => {
-      carder.clickOnShowMore(
-        showMoreBtn,
-        card,
-        doctor,
-        age,
-        diseases,
-        index,
-        press,
-        data,
-        goal,
-        description,
-        ugency,
-        dataLastVisit
-      );
+      carder.clickOnShowMore(showMoreBtn,card,doctor,age,diseases,index,press,data,goal,description,ugency, dataLastVisit);
     });
     let delBtn = document.getElementById(`del-${counter}`);
     let editBtn = document.getElementById(`edit-${counter}`);
     let doctorName = document.querySelector(".card-title");
     let nameClient = document.getElementById(`name-${counter}`);
     carder.deleteCard(delBtn, card, id); 
-    carder.editCard(editBtn, 
-      doctorName, 
-      id, 
-      card, 
-      nameClient, 
-      showMoreBtn, 
-      lastName,
-      name,
-      surname,
-      doctor,
-      age,
-      diseases,
-      index,
-      data,
-      press,
-      goal,
-      description,
-      ugency,
-      dataLastVisit);
+    carder.editCard( editBtn, doctorName, id, card, nameClient, showMoreBtn, lastName,name,surname,doctor,age,diseases,index,data,press,goal,description,ugency,dataLastVisit );
     document.getElementById('no-items').style.display = 'none' //TODO прячу надпись no items...
     return card;
   }
@@ -736,25 +691,7 @@ class Card {
     });
   }
 
-  editCard(btn, 
-      doctorStatus, 
-      cardId, 
-      card, 
-      nameClient, 
-      showMoreBtn,
-      lastName,
-      name,
-      surname,
-      doctor,
-      age,
-      diseases,
-      index,
-      data,
-      press,
-      goal,
-      description,
-      ugency,
-      dataLastVisit) {
+  editCard(btn, doctorStatus, cardId, card, nameClient, showMoreBtn,lastName,name,surname,doctor,age,diseases,index,data,press,goal,description, ugency, dataLastVisit) {
     btn.addEventListener("click", () => {
       counter1++;
       const modal3 = new Modal(`window-edit`, `edit-btn-${counter1}`, `close-in-edit-${counter1}`);
@@ -773,8 +710,6 @@ class Card {
       let arr = Array.from(doctorSelect);
       let lastSelect = arr.at(-1);
     
-
-      //const dentist2 = new VisitDentist();
       showValueInInput(doctor, ".visit-doctor");
       showValueInInput(ugency, ".visit-ugency");
       showValueInInput(lastName, ".visit-lastName");
@@ -951,6 +886,7 @@ class Card {
               goal,
               description,
               ugency,
+              dataLastVisit
             } = obj;
             nameClient.textContent = `${lastName} ${name} ${surname}`;
             doctorStatus.textContent = `Доктор: ${getDoctor(doctor)}`;
@@ -1027,6 +963,7 @@ class Card {
   ) {
     let info = document.createElement("div");
     if (doctor === "dentist") {
+      console.log(dataLastVisit);
       info.innerHTML = `<ul class="list-group list-group-flush">
       ${getClientInfo(data, goal, ugency, description)}
       <li class="list-group-item">Дата последнего визита: ${dataLastVisit}</li>
@@ -1052,6 +989,7 @@ class Card {
     return info;
   }
 }
+
 
 //функция для создания доп-инфо в карточке
 function getClientInfo(data, goal, ugency, description) {
@@ -1096,8 +1034,7 @@ function fieldInEditCard(mod, doctor, age, press, index, diseases, dataLastVisit
       } else if(showValueInInput(doctor, ".visit-doctor") === "dentist"){
         let dentist4 = new VisitDentist();
         let newWindow = mod.changeModal(dentist4.renderDentist());
-       showValueInInput(dataLastVisit, ".last-visit");
-       console.log(showValueInInput(dataLastVisit, ".last-visit"));
+        showValueInInput(dataLastVisit, ".last-visit");
         return newWindow;
       } else{
         let therapist3 = new VisitTherapist();
