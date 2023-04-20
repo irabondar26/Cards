@@ -54,9 +54,10 @@ entry.addEventListener("click", (e) => {
 });
 
 class Modal {
-  constructor(id, idSaveBtn) {
+  constructor(id, idSaveBtn, idCloseBtn="") {
     this.id = id;
     this.idSaveBtn = idSaveBtn;
+    this.idCloseBtn = idCloseBtn;
   }
 
   render(header = "", body, close = "", save = "") {
@@ -91,6 +92,7 @@ class Modal {
     btnClose.classList = "btn btn-secondary";
     btnClose.setAttribute("data-bs-dismiss", "modal");
     btnClose.textContent = close;
+    btnClose.id = this.idCloseBtn;
     btnClose.addEventListener("click", this.closeModal.bind(this));
     let btnSave = document.createElement("input");
     btnSave.type = "submit";
@@ -170,10 +172,7 @@ class Authorization {
 }
 
 class Visit {
-  constructor(body = "") {
-    this.body = body;
-  }
-  render(body = "") {
+  render() {
     let doctor = document.createElement("div");
     doctor.classList = "input-group mb-3";
     doctor.innerHTML = `
@@ -219,9 +218,9 @@ class Visit {
       <input type="text" aria-label="First name" class="form-control visit-name" placeholder="Имя" required>
       <input type="text" aria-label="Father name" class="form-control visit-surname" placeholder="Отчество" required>
       `;
-
+     
     let wrap = document.createElement("div");
-    wrap.append(doctor, urgency, dataOfVisit, goal, description, name, body);
+    wrap.append(doctor, urgency, dataOfVisit, goal, description, name);
     return wrap;
   }
 }
@@ -660,6 +659,7 @@ class Card {
       description,
       ugency,
       id,
+      dataLastVisit
     } = promise;
     const card = document.createElement("div");
     card.classList = "card card-width";
@@ -692,7 +692,8 @@ class Card {
         data,
         goal,
         description,
-        ugency
+        ugency,
+        dataLastVisit
       );
     });
     let delBtn = document.getElementById(`del-${counter}`);
@@ -700,7 +701,25 @@ class Card {
     let doctorName = document.querySelector(".card-title");
     let nameClient = document.getElementById(`name-${counter}`);
     carder.deleteCard(delBtn, card, id); 
-    carder.editCard(editBtn, doctorName, id, card, nameClient, showMoreBtn);
+    carder.editCard(editBtn, 
+      doctorName, 
+      id, 
+      card, 
+      nameClient, 
+      showMoreBtn, 
+      lastName,
+      name,
+      surname,
+      doctor,
+      age,
+      diseases,
+      index,
+      data,
+      press,
+      goal,
+      description,
+      ugency,
+      dataLastVisit);
     document.getElementById('no-items').style.display = 'none' //TODO прячу надпись no items...
     return card;
   }
@@ -719,14 +738,33 @@ class Card {
     });
   }
 
-  editCard(btn, doctorStatus, cardId, card, nameClient, showMoreBtn) {
+  editCard(btn, 
+      doctorStatus, 
+      cardId, 
+      card, 
+      nameClient, 
+      showMoreBtn,
+      lastName,
+      name,
+      surname,
+      doctor,
+      age,
+      diseases,
+      index,
+      data,
+      press,
+      goal,
+      description,
+      ugency,
+      dataLastVisit) {
     btn.addEventListener("click", () => {
       counter1++;
-      const modal3 = new Modal(`window-edit`, `edit-btn-${counter1}`);
+      const modal3 = new Modal(`window-edit`, `edit-btn-${counter1}`, `close-in-edit-${counter1}`);
+      const visit1 = new Visit();
       document.body.append(
         modal3.render(
           "Редактировать карточку",
-          visit.render(cardEditForm(doctorStatus)),
+          visit1.render(),
           "Отменить",
           "Сохранить"
         )
@@ -736,9 +774,20 @@ class Card {
       let doctorSelect = document.querySelectorAll(".visit-doctor");
       let arr = Array.from(doctorSelect);
       let lastSelect = arr.at(-1);
-      console.log(lastSelect.value);
+    
 
-      const dentist2 = new VisitDentist();
+      //const dentist2 = new VisitDentist();
+      showValueInInput(doctor, ".visit-doctor");
+      showValueInInput(ugency, ".visit-ugency");
+      showValueInInput(lastName, ".visit-lastName");
+      showValueInInput(name, ".visit-name");
+      showValueInInput(surname, ".visit-surname");
+      showValueInInput(goal, ".visit-goal");
+      showValueInInput(description, ".visit-description");
+      showValueInInput(data, ".visit-data");
+
+     
+    
 
       lastSelect.addEventListener("change", (e) => {
         let secondBody = document.querySelectorAll(".second-modal-body");
@@ -765,7 +814,10 @@ class Card {
       lastSelect = lastSelect.value;
       let secondBody = document.querySelectorAll(".second-modal-body");
       secondBody.forEach((el) => el.remove());
-      modal3.changeModal(dentist2.renderDentist());
+      //modal3.changeModal(dentist2.renderDentist());
+
+    fieldInEditCard(modal3, doctor, age, press, index, diseases, dataLastVisit);
+      
 
       function getValueInputs() {
         let obj = {};
@@ -790,12 +842,20 @@ class Card {
         return obj;
       }
 
+      let closeInEdit = document.getElementById(`close-in-edit-${counter1}`);
+      closeInEdit.addEventListener("click", ()=> {
+        let oldModal = document.getElementById("window-edit");
+        if (oldModal !== null) {
+          oldModal.remove();
+        }
+      })
+
       //далее при нажатии на кнопку сохранить, отправляем пост запрос и меняем данные в этой карте.
       let formEdit = document.getElementById("window-edit");
 
       formEdit.addEventListener("submit", (e) => {
         e.preventDefault();
-        console.log(getValueInputs());
+       
         modal3.closeModal();
         let fullobj;
         if (lastSelect === "dentist") {
@@ -807,7 +867,7 @@ class Card {
             description,
             lastName,
             name,
-            surname,
+            surname
           } = getValueInputs();
           let lastVisit = getLastValue(".last-visit");
 
@@ -898,7 +958,7 @@ class Card {
               ugency,
             } = obj;
             nameClient.textContent = `${lastName} ${name} ${surname}`;
-            doctorStatus.textContent = `${getDoctor(doctor)}`;
+            doctorStatus.textContent = `Доктор: ${getDoctor(doctor)}`;
             let listGroup = document.querySelector(".list-group");
             if (listGroup === null) {
               showMoreBtn.addEventListener("click", () => {
@@ -919,7 +979,8 @@ class Card {
                   data,
                   goal,
                   description,
-                  ugency
+                  ugency,
+                  dataLastVisit
                 );
               });
             } else {
@@ -940,16 +1001,16 @@ class Card {
                 data,
                 goal,
                 description,
-                ugency
+                ugency, 
+                dataLastVisit
               );
               btn.style.display = "flex";
             }
           });
-
-        let oldModal = document.getElementById("window-edit");
-        if (oldModal !== null) {
-          oldModal.remove();
-        }
+          let oldModal = document.getElementById("window-edit");
+  if (oldModal !== null) {
+    oldModal.remove();
+  }
       });
     });
   }
@@ -965,12 +1026,14 @@ class Card {
     data,
     goal,
     description,
-    ugency
+    ugency,
+    dataLastVisit
   ) {
     let info = document.createElement("div");
     if (doctor === "dentist") {
       info.innerHTML = `<ul class="list-group list-group-flush">
       ${getClientInfo(data, goal, ugency, description)}
+      <li class="list-group-item">Дата последнего визита: ${dataLastVisit}</li>
       </ul>`;
     } else if (doctor === "cardiologist") {
       info.innerHTML = `<ul class="list-group list-group-flush">
@@ -1024,18 +1087,36 @@ function getUrgency(ugency) {
   }
 }
 
-//функция для изменения формы в модалке редактирования карты
-function cardEditForm(doctor) {
-  if (doctor.textContent.includes("Стоматолог")) {
-    const dentist1 = new VisitDentist();
-    return dentist1.renderDentist();
-  } else if (doctor.textContent.includes("Кардиолог")) {
-    const cardiologist1 = new VisitCardiologist();
-    return cardiologist1.renderCardiologist();
-  } else {
-    const therapist1 = new VisitTherapist();
-    return therapist1.renderTherapist();
-  }
+function fieldInEditCard(mod, doctor, age, press, index, diseases, dataLastVisit){
+        if(showValueInInput(doctor, ".visit-doctor") === "cardiologist"){
+        const cardiologist3 = new VisitCardiologist();
+        let newWindow = mod.changeModal(cardiologist3.renderCardiologist());
+        showValueInInput(press, ".press");
+        showValueInInput(age, ".age");
+        showValueInInput(index, ".index");
+        showValueInInput(diseases, ".diseases");
+        return newWindow;
+
+      } else if(showValueInInput(doctor, ".visit-doctor") === "dentist"){
+        let dentist4 = new VisitDentist();
+        let newWindow = mod.changeModal(dentist4.renderDentist());
+       showValueInInput(dataLastVisit, ".last-visit");
+       console.log(showValueInInput(dataLastVisit, ".last-visit"));
+        return newWindow;
+      } else{
+        let therapist3 = new VisitTherapist();
+        let newWindow = mod.changeModal(therapist3.renderTherapist());
+        showValueInInput(age, ".age");
+        return newWindow;
+      }
+}
+
+function showValueInInput(prop, classes){
+  let current = document.querySelectorAll(classes);
+  let arrofCurrent = Array.from(current);
+  let lastCurrent = arrofCurrent.at(-1);
+  lastCurrent.value = prop;
+  return lastCurrent.value;
 }
 
 //ищу значение в инпуте при редактировании карты
