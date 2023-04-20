@@ -60,11 +60,12 @@ class Modal {
     this.idCloseBtn = idCloseBtn;
   }
 
-  render(header = "", body, close = "", save = "") {
+  render(header = "", body="", close = "", save = "") {
+
     // метод который делает модалку общую для всех форм. при вызове метода render в парметр body добавляем нужную форму.
 
     this.div1 = document.createElement("form");
-    this.div1.classList = "modal";
+    this.div1.classList = "modal modal-backdrop";
     this.div1.id = this.id;
     this.div1.tabIndex = "-1";
     const div2 = document.createElement("div");
@@ -99,6 +100,8 @@ class Modal {
     btnSave.classList = "btn btn-primary";
     btnSave.textContent = save;
     btnSave.id = this.idSaveBtn; // добавлю id к какждой кнопке "сохранить" в модалке, чтобы потом искать ее и вешать обработчик
+    let divback = document.createElement("div");
+    divback.classList = "modal-backdrop";
     this.div1.append(div2);
     div2.append(div3);
     div3.append(div4, div5, div6);
