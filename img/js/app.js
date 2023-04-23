@@ -138,7 +138,7 @@ btnSave.addEventListener("click", async (e) => {
 
 
 const visit = new Visit();
-export let counter = 0;
+let counter = 0;
 //при клике на эту кнопку выводится модальное окно для создания визита.
 createVisitBtn.addEventListener("click", (e) => {
   counter++;
@@ -260,18 +260,18 @@ createVisitBtn.addEventListener("click", (e) => {
         age: age,
       };
     }
-    try{
-      const newRequest = new Request();
-      newRequest
+    const newRequest = new Request();
+
+    newRequest
       .post(url, cardObj, TOKEN)
       .then((response) => response.json())
-      .then((data) => carder.renderCard(data));    
+      .then((data) => carder.renderCard(data));
 
-    }catch(err){
-      console.log(err.message);
-    }
+    
   });
 });
+
+let counter1 = 0;
 
 export const carder = new Card();
 
