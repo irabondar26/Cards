@@ -260,14 +260,16 @@ createVisitBtn.addEventListener("click", (e) => {
         age: age,
       };
     }
-    const newRequest = new Request();
-
-    newRequest
+    try{
+      const newRequest = new Request();
+      newRequest
       .post(url, cardObj, TOKEN)
       .then((response) => response.json())
-      .then((data) => carder.renderCard(data));
+      .then((data) => carder.renderCard(data));    
 
-    
+    }catch(err){
+      console.log(err.message);
+    }
   });
 });
 

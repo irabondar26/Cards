@@ -10,20 +10,16 @@ export default class Request {
       return response;
     }
   
-    post(url, obj, token) {
-      try {
-        let result = fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(obj),
-        });
-        return result;
-      } catch (e) {
-        console.log(e.message);
-      }
+    async post(url, obj, token) {
+      let result = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(obj),
+      });
+      return result;
     }
   
     async delete(token, url, cardId) {
@@ -37,20 +33,16 @@ export default class Request {
     }
     
   
-    put(token, url, cardId, obj) {
-      try {
-        let result = fetch(`${url}/${cardId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(obj),
-        });
-        return result;
-      } catch (e) {
-        console.log(e.message);
-      }
+    async put(token, url, cardId, obj) {
+      let result = await fetch(`${url}/${cardId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(obj),
+      });
+      return result;
     }
   }
   

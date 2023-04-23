@@ -236,7 +236,7 @@ export default class Card {
             };
           }
           console.log(fullobj);
-          const putRequest = new Request();
+            const putRequest = new Request();
           putRequest
             .put(TOKEN, url, cardId, fullobj)
             .then((response) => response.json())
@@ -310,7 +310,8 @@ export default class Card {
             let oldModal = document.getElementById("window-edit");
             if (oldModal !== null) {
             oldModal.remove();
-    }
+          }
+          
         });
       });
     }
