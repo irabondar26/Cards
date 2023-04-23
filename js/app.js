@@ -138,7 +138,7 @@ btnSave.addEventListener("click", async (e) => {
 
 
 const visit = new Visit();
-let counter = 0;
+export let counter = 0;
 //при клике на эту кнопку выводится модальное окно для создания визита.
 createVisitBtn.addEventListener("click", (e) => {
   counter++;
@@ -270,8 +270,6 @@ createVisitBtn.addEventListener("click", (e) => {
     
   });
 });
-
-let counter1 = 0;
 
 export const carder = new Card();
 

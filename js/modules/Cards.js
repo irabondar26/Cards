@@ -1,13 +1,12 @@
 import Request from "./Request.js";
-import TOKEN, { cardContainer, carder} from "../app.js";
-import { counter, url } from "./constants.js";
+import TOKEN, { cardContainer, carder, counter} from "../app.js";
+import { url } from "./constants.js";
 import { getDoctor, getClientInfo, showValueInInput, fieldInEditCard, getLastValue, noItemsShowHide } from "./handlers.js";
 import Modal from "./Modal.js";
 import { Visit, VisitCardiologist, VisitDentist, VisitTherapist } from "./Visits.js";
 
-
-
 let counter1 = 0;
+
 export default class Card {
     renderCard(promise) {
       const { lastName,name,surname,doctor,age,diseases,index,data,press,goal,description,ugency,id,dataLastVisit } = promise;

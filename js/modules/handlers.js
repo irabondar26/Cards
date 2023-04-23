@@ -1,6 +1,6 @@
 import TOKEN from "../app.js";
 import Card from "./Cards.js";
-import { url, counter } from "./constants.js";
+import { url } from "./constants.js";
 import Request from "./Request.js";
 import { VisitDentist, VisitCardiologist, VisitTherapist, Visit } from "./Visits.js";
 
